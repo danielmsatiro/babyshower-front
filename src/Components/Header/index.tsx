@@ -1,9 +1,55 @@
-import { AppBar, Box, Toolbar, Typography, Grid } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  Typography,
+  Grid,
+  Button,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import Logo from "../../Assets/logo-baby-shower.svg";
 import { Search, SearchIconWrapper, StyledInputBase } from "./style";
 import SearchIcon from "@mui/icons-material/Search";
+import { MouseEvent, useState } from "react";
 
 export const Header = () => {
+  const userAuth = true; //Aqui verifica se está logado
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const isMenuOpen = !!anchorEl;
+
+  const handleProfileMenuOpen = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const menuId = "primary-search-account-menu";
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem>Meu Perfil</MenuItem>
+      <MenuItem>Sair</MenuItem>
+    </Menu>
+  );
+
   return (
     <AppBar
       position="static"
@@ -23,7 +69,7 @@ export const Header = () => {
           alignItems: "center",
         }}
       >
-        <Typography>
+        <Typography color={"white"} variant={"body2"}>
           Se conecte com papais e mamães do Brasil inteiro!
         </Typography>
       </Box>
@@ -32,16 +78,17 @@ export const Header = () => {
         sx={{
           flexGrow: 1,
           background: "#fff",
-          height: "96px",
+          minHeight: "96px",
+          padding: "8px",
         }}
       >
         <Grid
           container
           color={"black"}
-          justifyContent={"space-between"}
+          justifyContent={"center"}
           alignItems="center"
         >
-          <Grid item>
+          <Grid item flex={1}>
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -52,12 +99,45 @@ export const Header = () => {
               />
             </Search>
           </Grid>
-          <Grid item>
-            <img src={Logo} alt="" />
+          <Grid item justifyContent={"center"}>
+            <img src={Logo} alt="babyshower" />
           </Grid>
-          <Grid item>Texto 3</Grid>
+          {userAuth ? (
+            <Grid
+              container
+              item
+              flex={1}
+              direction={"row"}
+              justifyContent="end"
+            >
+              <Button>
+                <Typography variant={"body1"}>Chat</Typography>
+              </Button>
+              <Button
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+              >
+                <Typography variant={"body1"}>Meu Perfil</Typography>
+              </Button>
+            </Grid>
+          ) : (
+            <Grid
+              container
+              item
+              flex={1}
+              direction={"row"}
+              justifyContent="end"
+            >
+              <Button>
+                <Typography variant={"body1"}>Entrar</Typography>
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </Toolbar>
+      {renderMenu}
     </AppBar>
   );
 };

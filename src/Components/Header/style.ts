@@ -3,15 +3,16 @@ import { styled, alpha, InputBase } from "@mui/material";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: "20px",
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  backgroundColor: theme.palette.grey[50],
   "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
+    backgroundColor: theme.palette.grey[100],
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
   width: "100%",
+  maxWidth: "408px",
   [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
+    marginLeft: theme.spacing(1),
     width: "auto",
   },
 }));
