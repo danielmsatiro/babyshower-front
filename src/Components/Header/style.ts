@@ -1,20 +1,21 @@
-import { styled, alpha, InputBase } from "@mui/material";
+import { styled, InputBase } from "@mui/material";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: "20px",
   backgroundColor: theme.palette.grey[50],
+  transition: theme.transitions.create("background"),
   "&:hover": {
     backgroundColor: theme.palette.grey[100],
   },
   marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
+  marginLeft: theme.spacing(2),
+  width: "auto",
   maxWidth: "408px",
-  [theme.breakpoints.up("sm")]: {
+  /* [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(1),
     width: "auto",
-  },
+  }, */
 }));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
@@ -33,11 +34,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
+    /* transition: theme.transitions.create("width"), */
     width: "100%",
-    [theme.breakpoints.up("md")]: {
+    /* [theme.breakpoints.up("md")]: {
       width: "20ch",
-    },
+    }, */
   },
 }));
 
