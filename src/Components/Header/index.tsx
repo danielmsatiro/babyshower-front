@@ -14,9 +14,10 @@ import { Search, SearchIconWrapper, StyledInputBase } from "./style";
 import SearchIcon from "@mui/icons-material/Search";
 import { MouseEvent, useState } from "react";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import { theme } from "../../Styles/theme";
 
 export const Header = () => {
-  const userAuth = true; //Aqui verifica se está logado
+  const userAuth = false; //Aqui verifica se está logado
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -104,9 +105,10 @@ export const Header = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          padding: theme.spacing(2),
         }}
       >
-        <Typography color={"white"} variant={"body1"}>
+        <Typography color={"white"} variant={"body2"}>
           Se conecte com papais e mamães do Brasil inteiro!
         </Typography>
       </Box>
@@ -150,16 +152,14 @@ export const Header = () => {
                 direction={"row"}
                 justifyContent="end"
               >
-                <Button>
-                  <Typography variant={"body1"}>Chat</Typography>
-                </Button>
+                <Button>Chat</Button>
                 <Button
                   aria-label="account of current user"
                   aria-controls={menuId}
                   aria-haspopup="true"
                   onClick={handleProfileMenuOpen}
                 >
-                  <Typography variant={"body1"}>Meu Perfil</Typography>
+                  Meu Perfil
                 </Button>
               </Grid>
             ) : (
@@ -170,9 +170,7 @@ export const Header = () => {
                 direction={"row"}
                 justifyContent="end"
               >
-                <Button>
-                  <Typography variant={"body1"}>Entrar</Typography>
-                </Button>
+                <Button>Entrar</Button>
               </Grid>
             )}
           </Grid>
