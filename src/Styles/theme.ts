@@ -1,5 +1,4 @@
 import { createTheme } from "@mui/material";
-import { transform } from "typescript";
 
 let theme = createTheme({
   palette: {
@@ -42,6 +41,7 @@ theme = createTheme(theme, {
           style: {
             fontSize: theme.typography.body1.fontSize,
             fontFamily: theme.typography.body1.fontFamily,
+            color: theme.palette.grey[500],
           },
         },
       ],

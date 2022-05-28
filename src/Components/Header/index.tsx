@@ -17,7 +17,7 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import { theme } from "../../Styles/theme";
 
 export const Header = () => {
-  const userAuth = false; //Aqui verifica se está logado
+  const userAuth = true; //Aqui verifica se está logado
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -92,15 +92,14 @@ export const Header = () => {
     <AppBar
       position="static"
       sx={{
-        borderBottom: " 1px solid rgba(68, 68, 68, 0.5)",
+        borderBottom: `1px solid ${theme.palette.grey[300]}`,
         boxShadow: "none",
       }}
     >
       <Box
         sx={{
           flexGrow: 1,
-          background:
-            "linear-gradient(269.72deg, #7A9AC9 11.22%, #C97AB7 89.3%)",
+          background: `linear-gradient(269.72deg, ${theme.palette.primary} 11.22%, ${theme.palette.secondary} 89.3%)`,
           height: "60px",
           display: "flex",
           justifyContent: "center",
@@ -125,7 +124,7 @@ export const Header = () => {
           <Grid item flex={1} sx={{ display: { xs: "none", md: "flex" } }}>
             <Search>
               <SearchIconWrapper>
-                <SearchIcon />
+                <SearchIcon sx={{ color: `${theme.palette.grey[300]}` }} />
               </SearchIconWrapper>
               <StyledInputBase
                 placeholder="Pesquisar"

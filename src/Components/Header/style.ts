@@ -3,6 +3,7 @@ import { styled, InputBase } from "@mui/material";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: "20px",
+  border: `1px solid ${theme.palette.grey[100]}`,
   backgroundColor: theme.palette.grey[50],
   transition: theme.transitions.create("background"),
   "&:hover": {
