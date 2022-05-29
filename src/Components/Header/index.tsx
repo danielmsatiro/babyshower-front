@@ -140,7 +140,7 @@ export const Header = () => {
             </Search>
           </Grid>
           <Grid item justifyContent={"center"}>
-            <IconButton onClick={() => history.push("/")}>
+            <IconButton onClick={() => history.push("/login")}>
               <img src={Logo} alt="babyshower" />
             </IconButton>
           </Grid>

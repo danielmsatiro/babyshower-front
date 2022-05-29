@@ -1,20 +1,27 @@
-import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import { Header } from "../../Components/Header";
 import { theme } from "../../Styles/theme";
 import Perfil from "../../Assets/perfil.jpg";
 
+import { FormProfile } from "../../Components/FormProfile";
+import { useState } from "react";
+
 const Profile = () => {
+  //Usuário fictício para teste
   const user = {
     id: 5555,
-    cpf: "11111111111",
-    username: "daniel1",
-    email: "daniel1@yahoo.com.br",
-    name: "Marcos",
-    phone: "(21) 99999-9999",
-    product: "api/products/by_parent/5555",
-    image: "https://imagem/320x240",
+    cpf: "12345678900",
+    username: "marlene.ford",
+    email: "marlene.ford@mail.com",
+    name: "Marlene Ford",
+    phone: "(61) 99999-9999",
+    product: "api/products/by_parent/5555", //Alterar response api para "products"
+    image: "http...", //Incluir campo na api
+    city: "São Paulo", //Incluir informação no response da api.
+    state: "São Paulo", //Incluir informação no response da api.
   };
 
+  //produtos fictícios para teste
   const products = [
     {
       id: 1,
@@ -66,18 +73,26 @@ const Profile = () => {
     },
   ];
 
+  const [updateMode, setUpdateMode] = useState(false);
+
   return (
     <>
       <Box
         sx={{
           background: `${theme.palette.grey[50]}`,
-          height: "100vh",
+          minHeight: "100vh",
         }}
       >
         <Header />
-        <Grid m={2} container>
+        <Grid
+          mt={8}
+          columnSpacing={12}
+          container
+          justifyContent={"center"}
+          sx={{ paddingLeft: "24px", paddingRight: "24px" }}
+        >
           <Grid item>
-            <Stack spacing={2}>
+            <Stack spacing={2} alignItems={"center"}>
               <Box
                 border={`8px ${theme.palette.grey[100]} solid`}
                 borderRadius={100}
@@ -89,12 +104,46 @@ const Profile = () => {
                   backgroundSize: `cover`,
                 }}
               />
-              <Button variant="contained">Editar Perfil</Button>
-              <Button variant="contained">Excluir Perfil</Button>
+              <Button
+                variant="contained"
+                sx={{ width: "133px" }}
+                color={updateMode ? "primary" : "success"}
+                onClick={() => setUpdateMode(true)}
+                type={updateMode ? "submit" : undefined}
+                id="id-form-update-profile"
+              >
+                {updateMode ? "Salvar" : "Editar"}
+              </Button>
+              <Button
+                variant="contained"
+                color="warning"
+                sx={{ width: "133px" }}
+              >
+                Excluir Perfil
+              </Button>
             </Stack>
           </Grid>
-          <Grid item></Grid>
-          <Typography> Meu Perfil </Typography>
+
+          <Grid item>
+            <Stack spacing={8}>
+              <Typography
+                alignSelf={"start"}
+                variant={"h1"}
+                color={theme.palette.grey[500]}
+              >
+                Meu Perfil{" "}
+              </Typography>
+              <FormProfile data={user} readOnly={!updateMode} />
+              <Typography> Produtos Cadastrados </Typography>
+              <Button
+                variant="contained"
+                color={"success"}
+                sx={{ width: "173px" }}
+              >
+                Adcionar Produto
+              </Button>
+            </Stack>
+          </Grid>
         </Grid>
       </Box>
     </>
