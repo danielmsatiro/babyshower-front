@@ -1,3 +1,10 @@
-const Home = () => <h1> Home </h1>
+import { Header } from "../../Components/Header";
 
-export default Home
+const Home = () => (
+  <>
+    <Header></Header>
+    <h1> Home </h1>
+  </>
+);
+
+export default Home;

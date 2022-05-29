@@ -4,10 +4,10 @@ const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: "20px",
   border: `1px solid ${theme.palette.grey[100]}`,
-  backgroundColor: theme.palette.grey[50],
+  backgroundColor: "#f3f3f3",
   transition: theme.transitions.create("background"),
   "&:hover": {
-    backgroundColor: theme.palette.grey[100],
+    backgroundColor: theme.palette.grey[50],
   },
   marginRight: theme.spacing(2),
   marginLeft: theme.spacing(2),
