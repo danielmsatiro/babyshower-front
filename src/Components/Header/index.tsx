@@ -15,9 +15,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import { MouseEvent, useState } from "react";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { theme } from "../../Styles/theme";
+import { useHistory } from "react-router-dom";
 
 export const Header = () => {
   const userAuth = true; //Aqui verifica se está logado
+
+  const history = useHistory();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -60,7 +63,7 @@ export const Header = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem>Meu Perfil</MenuItem>
+      <MenuItem onClick={() => history.push("/profile")}>Meu Perfil</MenuItem>
       <MenuItem>Sair</MenuItem>
     </Menu>
   );
@@ -82,9 +85,13 @@ export const Header = () => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {userAuth && <MenuItem>Meu Perfil</MenuItem>}
+      {userAuth && (
+        <MenuItem onClick={() => history.push("/profile")}>Meu Perfil</MenuItem>
+      )}
       {userAuth && <MenuItem>Sair</MenuItem>}
-      {!userAuth && <MenuItem>Entrar</MenuItem>}
+      {!userAuth && (
+        <MenuItem onClick={() => history.push("/login")}>Entrar</MenuItem>
+      )}
     </Menu>
   );
 
@@ -133,7 +140,9 @@ export const Header = () => {
             </Search>
           </Grid>
           <Grid item justifyContent={"center"}>
-            <img src={Logo} alt="babyshower" />
+            <IconButton onClick={() => history.push("/")}>
+              <img src={Logo} alt="babyshower" />
+            </IconButton>
           </Grid>
           <Grid
             container
@@ -169,7 +178,7 @@ export const Header = () => {
                 direction={"row"}
                 justifyContent="end"
               >
-                <Button>Entrar</Button>
+                <Button onClick={() => history.push("/login")}>Entrar</Button>
               </Grid>
             )}
           </Grid>
