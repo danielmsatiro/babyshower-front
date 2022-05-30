@@ -4,9 +4,13 @@ import { theme } from "../../Styles/theme";
 import Perfil from "../../Assets/perfil.jpg";
 
 import { FormProfile } from "../../Components/FormProfile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { getCitiesByStateThunk } from "../../Store/modules/cities/thunk";
 
 const Profile = () => {
+  const dispatch = useDispatch();
+
   //Usuário fictício para teste
   const user = {
     id: 5555,
@@ -20,6 +24,10 @@ const Profile = () => {
     city: "São Paulo", //Incluir informação no response da api.
     state: "São Paulo", //Incluir informação no response da api.
   };
+
+  useEffect(() => {
+    /*  dispatch(getCitiesByStateThunk(user.state)); */
+  }, []);
 
   //produtos fictícios para teste
   const products = [
