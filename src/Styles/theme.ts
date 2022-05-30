@@ -56,6 +56,11 @@ theme = createTheme(theme, {
         },
       ],
     },
+    MuiStack: {
+      defaultProps: {
+        spacing: 1,
+      },
+    },
     MuiFormHelperText: {
       defaultProps: {
         error: true,

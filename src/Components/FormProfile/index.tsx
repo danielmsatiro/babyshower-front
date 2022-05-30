@@ -1,5 +1,5 @@
-import { Button, FormHelperText, Grid, Stack } from "@mui/material";
-import { StyledInput, StyledLabel } from "./style";
+import { FormHelperText, Grid, MenuItem, Select, Stack } from "@mui/material";
+import { StyledInput, StyledLabel, StyledStack } from "./style";
 import { IUser } from "../../interfaces/user";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -22,6 +22,36 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
     console.log(data);
   };
 
+  const states = [
+    "Acre",
+    "Alagoas",
+    "Amapá",
+    "Amazonas",
+    "Bahia",
+    "Ceará",
+    "Distrito Federal",
+    "Espirito Santo",
+    "Goiás",
+    "Maranhão",
+    "Mato Grosso do Sul",
+    "Mato Grosso",
+    "Minas Gerais",
+    "Pará",
+    "Paraíba",
+    "Paraná",
+    "Pernambuco",
+    "Piauí",
+    "Rio de Janeiro",
+    "Rio Grande do Norte",
+    "Rio Grande do Sul",
+    "Rondônia",
+    "Roraima",
+    "Santa Catarina",
+    "São Paulo",
+    "Sergipe",
+    "Tocantins",
+  ];
+
   return (
     <Grid
       container
@@ -32,11 +62,12 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
     >
       <Grid item>
         <Stack spacing={3}>
-          <Stack spacing={1}>
+          <StyledStack>
             <StyledLabel>CPF</StyledLabel>
             <StyledInput placeholder={data.cpf} readOnly disableUnderline />
-          </Stack>
-          <Stack spacing={1}>
+            <FormHelperText>{}</FormHelperText>
+          </StyledStack>
+          <StyledStack>
             <StyledLabel>nome completo</StyledLabel>
             <StyledInput
               readOnly={readOnly}
@@ -46,8 +77,8 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
               error={!!errors.name}
             />
             <FormHelperText>{errors.name?.message}</FormHelperText>
-          </Stack>
-          <Stack spacing={1}>
+          </StyledStack>
+          <StyledStack>
             <StyledLabel>username</StyledLabel>
             <StyledInput
               readOnly={readOnly}
@@ -57,8 +88,8 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
               error={!!errors.username}
             />
             <FormHelperText>{errors.username?.message}</FormHelperText>
-          </Stack>
-          <Stack spacing={1}>
+          </StyledStack>
+          <StyledStack>
             <StyledLabel>email</StyledLabel>
             <StyledInput
               readOnly={readOnly}
@@ -68,12 +99,12 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
               error={!!errors.email}
             />
             <FormHelperText>{errors.email?.message}</FormHelperText>
-          </Stack>
+          </StyledStack>
         </Stack>
       </Grid>
       <Grid item>
         <Stack spacing={3}>
-          <Stack spacing={1}>
+          <StyledStack>
             <StyledLabel>telefone</StyledLabel>
             <StyledInput
               placeholder="(XX) XXXXX-XXXX"
@@ -84,8 +115,8 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
               error={!!errors.phone}
             />
             <FormHelperText>{errors.phone?.message}</FormHelperText>
-          </Stack>
-          <Stack spacing={1}>
+          </StyledStack>
+          <StyledStack>
             <StyledLabel>senha</StyledLabel>
             <StyledInput
               placeholder={readOnly ? "**********" : "Digite uma nova senha"}
@@ -96,19 +127,22 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
               error={!!errors.password}
             />
             <FormHelperText>{errors.password?.message}</FormHelperText>
-          </Stack>
-          <Stack spacing={1}>
+          </StyledStack>
+          <StyledStack>
             <StyledLabel>estado</StyledLabel>
-            <StyledInput
+            <Select
               readOnly={readOnly}
-              disableUnderline
               defaultValue={data.state}
               {...register("state")}
-              error={!!errors.state}
-            />
-            <FormHelperText>{errors.state?.message}</FormHelperText>
-          </Stack>
-          <Stack spacing={1}>
+            >
+              {states.map((item, idx) => (
+                <MenuItem key={idx} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </StyledStack>
+          <StyledStack>
             <StyledLabel>cidade</StyledLabel>
             <StyledInput
               readOnly={readOnly}
@@ -118,7 +152,7 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
               error={!!errors.city}
             />
             <FormHelperText>{errors.city?.message}</FormHelperText>
-          </Stack>
+          </StyledStack>
         </Stack>
       </Grid>
     </Grid>

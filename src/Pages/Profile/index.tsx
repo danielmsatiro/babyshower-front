@@ -108,18 +108,21 @@ const Profile = () => {
                 variant="contained"
                 sx={{ width: "133px" }}
                 color={updateMode ? "primary" : "success"}
-                onClick={() => setUpdateMode(!updateMode)}
                 type={!updateMode ? "submit" : undefined}
                 form="id-form-update-profile"
+                onClick={() => setUpdateMode(!updateMode)}
               >
                 {updateMode ? "Salvar" : "Editar"}
               </Button>
               <Button
                 variant="contained"
-                color="warning"
                 sx={{ width: "133px" }}
+                color={updateMode ? "secondary" : "warning"}
+                onClick={
+                  updateMode ? () => setUpdateMode(!updateMode) : undefined
+                }
               >
-                Excluir Perfil
+                {updateMode ? "Cancelar" : "Excluir Perfil"}
               </Button>
             </Stack>
           </Grid>
