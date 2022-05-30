@@ -56,6 +56,11 @@ theme = createTheme(theme, {
         },
       ],
     },
+    MuiFormHelperText: {
+      defaultProps: {
+        error: true,
+      },
+    },
   },
 });
 

@@ -108,9 +108,9 @@ const Profile = () => {
                 variant="contained"
                 sx={{ width: "133px" }}
                 color={updateMode ? "primary" : "success"}
-                onClick={() => setUpdateMode(true)}
-                type={updateMode ? "submit" : undefined}
-                id="id-form-update-profile"
+                onClick={() => setUpdateMode(!updateMode)}
+                type={!updateMode ? "submit" : undefined}
+                form="id-form-update-profile"
               >
                 {updateMode ? "Salvar" : "Editar"}
               </Button>
