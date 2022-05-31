@@ -9,7 +9,12 @@ import { useDispatch } from "react-redux";
 import { getCitiesByStateThunk } from "../../Store/modules/cities/thunk";
 
 const Profile = () => {
+  const [cities, setCities] = useState([]);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCitiesByStateThunk("São Paulo"));
+  }, []);
 
   //Usuário fictício para teste
   const user = {
@@ -24,10 +29,6 @@ const Profile = () => {
     city: "São Paulo", //Incluir informação no response da api.
     state: "São Paulo", //Incluir informação no response da api.
   };
-
-  useEffect(() => {
-    /*  dispatch(getCitiesByStateThunk(user.state)); */
-  }, []);
 
   //produtos fictícios para teste
   const products = [
