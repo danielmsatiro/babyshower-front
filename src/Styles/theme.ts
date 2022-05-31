@@ -1,5 +1,4 @@
 import { createTheme } from "@mui/material";
-import { transform } from "typescript";
 
 let theme = createTheme({
   palette: {
@@ -16,6 +15,11 @@ let theme = createTheme({
     },
   },
   typography: {
+    h1: {
+      fontFamily: "'Comfortaa', cursive",
+      fontSize: 40,
+      fontWeight: "700",
+    },
     fontFamily: "'Poppins', sans-serif, 'Comfortaa', cursive",
     body1: {
       fontFamily: "'Poppins', sans-serif",
@@ -24,6 +28,10 @@ let theme = createTheme({
     body2: {
       fontFamily: "'Comfortaa', cursive",
       fontSize: 20,
+    },
+    button: {
+      fontFamily: "'Poppins', sans-serif",
+      fontWeight: "700",
     },
   },
 });
@@ -34,6 +42,7 @@ theme = createTheme(theme, {
       styleOverrides: {
         root: {
           textTransform: "none",
+          color: "#fff",
         },
       },
       variants: [
@@ -41,10 +50,21 @@ theme = createTheme(theme, {
           props: { variant: "text" },
           style: {
             fontSize: theme.typography.body1.fontSize,
-            fontFamily: theme.typography.body1.fontFamily,
+            fontWeight: "500",
+            color: theme.palette.grey[500],
           },
         },
       ],
+    },
+    MuiStack: {
+      defaultProps: {
+        spacing: 1,
+      },
+    },
+    MuiFormHelperText: {
+      defaultProps: {
+        error: true,
+      },
     },
   },
 });
