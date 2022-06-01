@@ -1,9 +1,22 @@
-import { FormHelperText, Grid, MenuItem, Select, Stack } from "@mui/material";
-import { StyledInput, StyledLabel, StyledStack } from "./style";
-import { IUser } from "../../interfaces/user";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  FormControl,
+  FormHelperText,
+  Grid,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { states } from "../../constants";
+import { IUser } from "../../interfaces/user";
 import { updateUserSchema } from "../../schemas/user/updateUser";
+import { RootStore } from "../../Store";
+import { getCitiesByStateThunk } from "../../Store/modules/cities/thunk";
+import { StyledInput, StyledLabel, StyledStack } from "./style";
 
 interface IFormProps {
   data: Partial<IUser>;
@@ -22,35 +35,14 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
     console.log(data);
   };
 
-  const states = [
-    "Acre",
-    "Alagoas",
-    "Amapá",
-    "Amazonas",
-    "Bahia",
-    "Ceará",
-    "Distrito Federal",
-    "Espirito Santo",
-    "Goiás",
-    "Maranhão",
-    "Mato Grosso do Sul",
-    "Mato Grosso",
-    "Minas Gerais",
-    "Pará",
-    "Paraíba",
-    "Paraná",
-    "Pernambuco",
-    "Piauí",
-    "Rio de Janeiro",
-    "Rio Grande do Norte",
-    "Rio Grande do Sul",
-    "Rondônia",
-    "Roraima",
-    "Santa Catarina",
-    "São Paulo",
-    "Sergipe",
-    "Tocantins",
-  ];
+  const cities = useSelector((state: RootStore): any => state.cities).cities;
+
+  const [currentState, setCurrentState] = useState(data.state);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getCitiesByStateThunk(currentState as string));
+  }, [currentState]);
 
   return (
     <Grid
@@ -129,29 +121,53 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
             <FormHelperText>{errors.password?.message}</FormHelperText>
           </StyledStack>
           <StyledStack>
-            <StyledLabel>estado</StyledLabel>
-            <Select
-              readOnly={readOnly}
-              defaultValue={data.state}
-              {...register("state")}
-            >
-              {states.map((item, idx) => (
-                <MenuItem key={idx} value={item}>
-                  {item}
-                </MenuItem>
-              ))}
-            </Select>
+            <FormControl>
+              <StyledLabel id="select-state-label">estado</StyledLabel>
+              <Select
+                readOnly={readOnly}
+                labelId="select-state-label"
+                label="estado"
+                value={currentState}
+                id="select-state"
+                {...register("state")}
+                onChange={(e: SelectChangeEvent) => {
+                  setCurrentState(e.target.value as string);
+                }}
+              >
+                {states.map((item, idx) => (
+                  <MenuItem key={idx} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </StyledStack>
           <StyledStack>
-            <StyledLabel>cidade</StyledLabel>
-            <StyledInput
-              readOnly={readOnly}
-              disableUnderline
-              defaultValue={data.city}
-              {...register("city")}
-              error={!!errors.city}
-            />
-            <FormHelperText>{errors.city?.message}</FormHelperText>
+            <FormControl>
+              <StyledLabel id="select-city-label">cidade</StyledLabel>
+              <Select
+                readOnly={readOnly}
+                labelId="select-city-label"
+                label="city"
+                id="select-city"
+                value={
+                  currentState !== data.state && cities.length > 0
+                    ? cities[0].city
+                    : data.city
+                }
+                {...register("city")}
+              >
+                {cities.length > 0 ? (
+                  cities.map(({ point_id, city }: any) => (
+                    <MenuItem key={point_id} value={city}>
+                      {city}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value={data.city}>{data.city}</MenuItem>
+                )}
+              </Select>
+            </FormControl>
           </StyledStack>
         </Stack>
       </Grid>
