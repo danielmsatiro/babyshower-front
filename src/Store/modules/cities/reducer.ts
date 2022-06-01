@@ -9,27 +9,24 @@ import {
 
 interface DefaultStateI {
   loading: boolean;
-  cities?: CityType;
+  cities?: CityType[];
 }
 
 const defaultState: DefaultStateI = {
   loading: false,
+  cities: [],
 };
 
 const citiesReducer = (state = defaultState, action: CitiesDispatchTypes) => {
   switch (action.type) {
     case CITIES_FAIL:
-      return {
-        loading: false,
-      };
+      return { ...defaultState, loading: false };
     case CITIES_LOADING:
-      return {
-        loading: true,
-      };
+      return { ...defaultState, loading: true };
     case CITIES_SUCCESS:
       return {
         loading: false,
-        pokemon: action.payload,
+        cities: action.payload,
       };
     default:
       return state;

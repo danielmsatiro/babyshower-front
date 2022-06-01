@@ -4,18 +4,9 @@ import { theme } from "../../Styles/theme";
 import Perfil from "../../Assets/perfil.jpg";
 
 import { FormProfile } from "../../Components/FormProfile";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { getCitiesByStateThunk } from "../../Store/modules/cities/thunk";
+import { useState } from "react";
 
 const Profile = () => {
-  const [cities, setCities] = useState([]);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getCitiesByStateThunk("São Paulo"));
-  }, []);
-
   //Usuário fictício para teste
   const user = {
     id: 5555,

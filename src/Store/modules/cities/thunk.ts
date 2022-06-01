@@ -8,13 +8,14 @@ import {
 } from "./actionTypes";
 
 export const getCitiesByStateThunk =
-  (state: string) => async (dispatch: Dispatch<CitiesDispatchTypes>) => {
+  (state: string): any =>
+  async (dispatch: Dispatch<CitiesDispatchTypes>) => {
     try {
       dispatch({
         type: CITIES_LOADING,
       });
 
-      const res = await api.get(`/cities?state=${state}`);
+      const res: any = await api.get(`/cities?state=${state}&per_page=5000`);
 
       dispatch({
         type: CITIES_SUCCESS,

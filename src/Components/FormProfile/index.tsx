@@ -4,6 +4,11 @@ import { IUser } from "../../interfaces/user";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { updateUserSchema } from "../../schemas/user/updateUser";
+import { useDispatch } from "react-redux";
+import { RootStore } from "../../Store";
+import { useSelector } from "react-redux";
+import { getCitiesByStateThunk } from "../../Store/modules/cities/thunk";
+import { useEffect } from "react";
 
 interface IFormProps {
   data: Partial<IUser>;
@@ -51,6 +56,14 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
     "Sergipe",
     "Tocantins",
   ];
+
+  const dispatch = useDispatch();
+
+  const cities = useSelector((state: RootStore): any => state.cities).cities;
+
+  useEffect(() => {
+    dispatch(getCitiesByStateThunk(data.state as string));
+  }, []);
 
   return (
     <Grid
@@ -144,14 +157,21 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
           </StyledStack>
           <StyledStack>
             <StyledLabel>cidade</StyledLabel>
-            <StyledInput
+            <Select
               readOnly={readOnly}
-              disableUnderline
               defaultValue={data.city}
               {...register("city")}
-              error={!!errors.city}
-            />
-            <FormHelperText>{errors.city?.message}</FormHelperText>
+            >
+              {cities.length > 0 ? (
+                cities.map(({ point_id, city }: any) => (
+                  <MenuItem key={point_id} value={city}>
+                    {city}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value={data.city}>{data.city}</MenuItem>
+              )}
+            </Select>
           </StyledStack>
         </Stack>
       </Grid>
