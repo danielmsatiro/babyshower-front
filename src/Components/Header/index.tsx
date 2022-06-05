@@ -106,7 +106,7 @@ export const Header = () => {
       <Box
         sx={{
           flexGrow: 1,
-          background: `linear-gradient(269.72deg, ${theme.palette.primary} 11.22%, ${theme.palette.secondary} 89.3%)`,
+          background: `linear-gradient(269.72deg,${theme.palette.primary.main} 11.22%, ${theme.palette.secondary.main} 89.3%)`,
           height: "60px",
           display: "flex",
           justifyContent: "center",
