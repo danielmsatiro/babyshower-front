@@ -27,9 +27,3 @@ export interface CitiesFail {
 }
 
 export type CitiesDispatchTypes = CitiesLoading | CitiesSuccess | CitiesFail;
-
-/* export const getCitiesByState = (data: ICities): IActionCity => ({
-  type: GET_CITIES,
-  data,
-});
- */

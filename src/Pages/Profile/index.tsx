@@ -8,8 +8,6 @@ import { useState } from "react";
 import { products, user } from "../../constants";
 
 const Profile = () => {
-  //Usuário fictício para teste
-
   const [updateMode, setUpdateMode] = useState(false);
 
   return (

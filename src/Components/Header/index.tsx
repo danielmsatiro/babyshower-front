@@ -16,11 +16,14 @@ import { MouseEvent, useState } from "react";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { theme } from "../../Styles/theme";
 import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { RootStore } from "../../Store";
+import { logoutThunk } from "../../Store/modules/token/thunk";
 
 export const Header = () => {
-  const userAuth = false; //Aqui verifica se está logado
-
+  const userAuth = !!useSelector((state: RootStore): any => state.token).token;
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -46,6 +49,10 @@ export const Header = () => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleLogout = () => {
+    dispatch(logoutThunk());
+  };
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -63,8 +70,22 @@ export const Header = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => history.push("/profile")}>Meu Perfil</MenuItem>
-      <MenuItem>Sair</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          history.push("/profile");
+        }}
+      >
+        Meu Perfil
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          handleLogout();
+        }}
+      >
+        Sair
+      </MenuItem>
     </Menu>
   );
 
@@ -86,9 +107,25 @@ export const Header = () => {
       onClose={handleMobileMenuClose}
     >
       {userAuth && (
-        <MenuItem onClick={() => history.push("/profile")}>Meu Perfil</MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleMobileMenuClose();
+            history.push("/profile");
+          }}
+        >
+          Meu Perfil
+        </MenuItem>
       )}
-      {userAuth && <MenuItem>Sair</MenuItem>}
+      {userAuth && (
+        <MenuItem
+          onClick={() => {
+            handleMobileMenuClose();
+            handleLogout();
+          }}
+        >
+          Sair
+        </MenuItem>
+      )}
       {!userAuth && (
         <MenuItem onClick={() => history.push("/login")}>Entrar</MenuItem>
       )}

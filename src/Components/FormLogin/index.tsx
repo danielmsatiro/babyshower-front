@@ -10,9 +10,14 @@ import { useForm } from "react-hook-form";
 import { IUser } from "../../interfaces/user";
 import { loginUserSchema } from "../../schemas/user/loginUser";
 import { StyledInput, StyledLabel, StyledStack } from "./style";
+import { getTokenThunk } from "../../Store/modules/token/thunk";
+import { useDispatch, useSelector } from "react-redux";
+import { RootStore } from "../../Store";
+import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
 
 interface ILogin extends IUser {
-  usernameCPFEmail: string;
+  usernameCpfEmail: string;
 }
 
 export const FormLogin = () => {
@@ -22,9 +27,36 @@ export const FormLogin = () => {
     handleSubmit,
   } = useForm<Partial<ILogin>>({ resolver: yupResolver(loginUserSchema) });
 
-  const handleLogin = (data: Partial<ILogin>) => {
-    console.log("passei aqui");
-    console.log(data);
+  const token = useSelector((state: RootStore): any => state.token);
+
+  const history = useHistory();
+
+  useEffect(() => {
+    if (token.token) {
+      history.push("/");
+    }
+  });
+
+  const dispatch = useDispatch();
+  const handleLogin = ({ usernameCpfEmail, password }: Partial<ILogin>) => {
+    const reCpf = /[0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2}/;
+    const reEmail = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
+    if (reCpf.test(usernameCpfEmail as string)) {
+      dispatch(
+        getTokenThunk({ cpf: usernameCpfEmail, password: password as string })
+      );
+    } else if (reEmail.test(usernameCpfEmail as string)) {
+      dispatch(
+        getTokenThunk({ email: usernameCpfEmail, password: password as string })
+      );
+    } else {
+      dispatch(
+        getTokenThunk({
+          username: usernameCpfEmail,
+          password: password as string,
+        })
+      );
+    }
   };
 
   return (
@@ -37,8 +69,8 @@ export const FormLogin = () => {
         <Stack>
           <TextField
             label="Username/CPF/Email"
-            {...register("usernameCPFEmail")}
-            error={!!errors.usernameCPFEmail}
+            {...register("usernameCpfEmail")}
+            error={!!errors.usernameCpfEmail}
             variant="standard"
           />
           <FormHelperText>{}</FormHelperText>
