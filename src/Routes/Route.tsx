@@ -1,5 +1,7 @@
 import { ComponentType } from "react";
+import { useSelector } from "react-redux";
 import { Redirect, Route as ReactRoute, RouteProps } from "react-router-dom";
+import { RootStore } from "../Store";
 
 interface Props extends RouteProps {
   isPrivate?: boolean;
@@ -11,7 +13,7 @@ export const Route = ({
   component: Component,
   ...rest
 }: Props) => {
-  const accessToken = false; //Precisa buscar o token aqui
+  const accessToken = useSelector((state: RootStore): any => state.token.token);
 
   return (
     <ReactRoute

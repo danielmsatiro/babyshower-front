@@ -16,7 +16,6 @@ export const getCitiesByStateThunk =
       });
 
       const res: any = await api.get(`/cities?state=${state}&per_page=5000`);
-
       dispatch({
         type: CITIES_SUCCESS,
         payload: res.data.cities,
