@@ -18,7 +18,7 @@ import { theme } from "../../Styles/theme";
 import { useHistory } from "react-router-dom";
 
 export const Header = () => {
-  const userAuth = true; //Aqui verifica se está logado
+  const userAuth = false; //Aqui verifica se está logado
 
   const history = useHistory();
 
