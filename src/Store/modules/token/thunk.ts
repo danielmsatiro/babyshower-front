@@ -1,5 +1,6 @@
 import { Dispatch } from "redux";
 import api from "../../../Services/api";
+import { getParentByIdThunk } from "../profile/thunk";
 import {
   TOKEN_FAIL,
   TOKEN_LOADING,

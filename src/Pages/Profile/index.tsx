@@ -4,11 +4,23 @@ import { theme } from "../../Styles/theme";
 import Perfil from "../../Assets/perfil.jpg";
 
 import { FormProfile } from "../../Components/FormProfile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { products, user } from "../../constants";
+import { useSelector } from "react-redux";
+import { RootStore } from "../../Store";
+import { useDispatch } from "react-redux";
+import { getParentByIdThunk } from "../../Store/modules/profile/thunk";
 
 const Profile = () => {
   const [updateMode, setUpdateMode] = useState(false);
+  const userData = useSelector((state: RootStore): any => state.user);
+  const token = useSelector((state: RootStore): any => state.token);
+  const dispatch = useDispatch();
+  console.log(userData);
+
+  useEffect(() => {
+    dispatch(getParentByIdThunk(token.id, token.token));
+  }, []);
 
   return (
     <>
@@ -71,7 +83,7 @@ const Profile = () => {
               >
                 Meu Perfil{" "}
               </Typography>
-              <FormProfile data={user} readOnly={!updateMode} />
+              <FormProfile data={userData?.dataUser} readOnly={!updateMode} />
               <Typography> Produtos Cadastrados </Typography>
               <Button
                 variant="contained"

@@ -19,7 +19,7 @@ const decodedToken = (): DecodedTokenI => {
   const token = localStorage.getItem("@Babyshower: token");
   if (token) {
     const decoded = jwt_decode<JwtPayload>(token);
-    console.log(decoded);
+
     return {
       id: (decoded.sub as any)?.id,
       token,
@@ -32,8 +32,6 @@ const defaultState: DefaultStateI = {
   ...decodedToken(),
   loading: false,
 };
-
-console.log(defaultState);
 
 const tokenReducer = (state = defaultState, action: TokenDispatchTypes) => {
   switch (action.type) {

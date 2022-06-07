@@ -8,6 +8,6 @@ export interface IUser {
   phone: string;
   product: string; //Alterar na api para "products"
   image?: string; //Incluir campo na api
-  city: string; //Incluir informação no response da api.
-  state: string; //Incluir informação no response da api.
+  city?: string; //Incluir informação no response da api.
+  state?: string; //Incluir informação no response da api.
 }

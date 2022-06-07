@@ -31,13 +31,17 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
   } = useForm<Partial<IUser>>({ resolver: yupResolver(updateUserSchema) });
 
   const handleUpdateProfile = (data: Partial<IUser>) => {
-    console.log("passei aqui");
     console.log(data);
   };
 
   const cities = useSelector((state: RootStore): any => state.cities).cities;
 
-  const [currentState, setCurrentState] = useState(data.state);
+  const [currentState, setCurrentState] = useState(data?.state);
+
+  const currentCity =
+    currentState !== data?.state && cities.length > 0
+      ? cities[0].city
+      : data?.city;
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -56,7 +60,7 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
         <Stack spacing={3}>
           <StyledStack>
             <StyledLabel>CPF</StyledLabel>
-            <StyledInput placeholder={data.cpf} readOnly disableUnderline />
+            <StyledInput placeholder={data?.cpf} readOnly disableUnderline />
             <FormHelperText>{}</FormHelperText>
           </StyledStack>
           <StyledStack>
@@ -64,7 +68,7 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
             <StyledInput
               readOnly={readOnly}
               disableUnderline
-              defaultValue={data.name}
+              defaultValue={data?.name}
               {...register("name")}
               error={!!errors.name}
             />
@@ -75,7 +79,7 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
             <StyledInput
               readOnly={readOnly}
               disableUnderline
-              defaultValue={data.username}
+              defaultValue={data?.username}
               {...register("username")}
               error={!!errors.username}
             />
@@ -86,7 +90,7 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
             <StyledInput
               readOnly={readOnly}
               disableUnderline
-              defaultValue={data.email}
+              defaultValue={data?.email}
               {...register("email")}
               error={!!errors.email}
             />
@@ -102,7 +106,7 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
               placeholder="(XX) XXXXX-XXXX"
               readOnly={readOnly}
               disableUnderline
-              defaultValue={data.phone}
+              defaultValue={data?.phone}
               {...register("phone")}
               error={!!errors.phone}
             />
@@ -150,12 +154,9 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
                 labelId="select-city-label"
                 label="city"
                 id="select-city"
-                value={
-                  currentState !== data.state && cities.length > 0
-                    ? cities[0].city
-                    : data.city
-                }
+                defaultValue={data?.city}
                 {...register("city")}
+                error={!!errors.city}
               >
                 {cities.length > 0 ? (
                   cities.map(({ point_id, city }: any) => (
@@ -164,9 +165,10 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
                     </MenuItem>
                   ))
                 ) : (
-                  <MenuItem value={data.city}>{data.city}</MenuItem>
+                  <MenuItem value={data?.city}>{data?.city}</MenuItem>
                 )}
               </Select>
+              <FormHelperText>{errors.city?.message}</FormHelperText>
             </FormControl>
           </StyledStack>
         </Stack>
