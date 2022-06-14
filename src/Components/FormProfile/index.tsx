@@ -48,11 +48,6 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
     setCurrentCity(cities[0].city)
   }})
 
-  /* const currentCity =
-    currentState !== data?.state && cities.length > 0
-      ? cities[0].city
-      : data?.city; */
-
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getCitiesByStateThunk(currentState as string));
@@ -70,8 +65,12 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
         <Stack spacing={3}>
           <StyledStack>
             <StyledLabel>CPF</StyledLabel>
-            <StyledInput placeholder={data?.cpf} readOnly disableUnderline />
-            <FormHelperText>{}</FormHelperText>
+            <StyledInput readOnly={readOnly}
+              disableUnderline
+              defaultValue={data?.cpf}
+              {...register("cpf")}
+              error={!!errors.cpf} />
+            <FormHelperText>{errors.cpf?.message}</FormHelperText>
           </StyledStack>
           <StyledStack>
             <StyledLabel>nome completo</StyledLabel>

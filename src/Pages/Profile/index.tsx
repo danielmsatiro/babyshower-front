@@ -5,19 +5,17 @@ import Perfil from "../../Assets/perfil.jpg";
 
 import { FormProfile } from "../../Components/FormProfile";
 import { useEffect, useState } from "react";
-import { products, user } from "../../constants";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Store";
 import { useDispatch } from "react-redux";
 import { getParentByIdThunk } from "../../Store/modules/profile/thunk";
+import { ProductsProfile } from "../../Components/ProductsProfile";
 
 const Profile = () => {
   const [updateMode, setUpdateMode] = useState(false);
-  const userData = useSelector((state: RootStore): any => state.user);
+  const user = useSelector((state: RootStore): any => state.user);
   const token = useSelector((state: RootStore): any => state.token);
   const dispatch = useDispatch();
-  console.log(userData)
-
 
   useEffect(() => {
     dispatch(getParentByIdThunk(token.id, token.token));
@@ -48,7 +46,7 @@ const Profile = () => {
                   overflow: "hidden",
                   height: "309px",
                   width: "309px",
-                  backgroundImage: `url(${userData?.dataUser?.image})`,
+                  backgroundImage: `url(${user?.dataUser?.image})`,
                   backgroundSize: `cover`,
                 }}
               />
@@ -84,8 +82,9 @@ const Profile = () => {
               >
                 Meu Perfil{" "}
               </Typography>
-              {userData?.dataUser && <FormProfile data={userData.dataUser} readOnly={!updateMode} />}
+              {user?.dataUser && <FormProfile data={user.dataUser} readOnly={!updateMode} />}
               <Typography> Produtos Cadastrados </Typography>
+              <ProductsProfile/>
               <Button
                 variant="contained"
                 color={"success"}

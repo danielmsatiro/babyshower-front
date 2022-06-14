@@ -6,8 +6,8 @@ export interface IUser {
   password: string;
   name: string;
   phone: string;
-  products: string; //Alterar na api para "products"
-  image?: string; //Incluir campo na api
-  city?: string; //Incluir informação no response da api.
-  state?: string; //Incluir informação no response da api.
+  products: string;
+  image: string; 
+  city: string;
+  state: string;
 }
