@@ -15,6 +15,7 @@ import { states } from "../../constants";
 import { IUser } from "../../interfaces/user";
 import { updateUserSchema } from "../../schemas/user/updateUser";
 import { RootStore } from "../../Store";
+import { CityType } from "../../Store/modules/cities/actionTypes";
 import { getCitiesByStateThunk } from "../../Store/modules/cities/thunk";
 import { StyledInput, StyledLabel, StyledStack } from "./style";
 
@@ -36,12 +37,21 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
 
   const cities = useSelector((state: RootStore): any => state.cities).cities;
 
-  const [currentState, setCurrentState] = useState(data?.state);
 
-  const currentCity =
+  const [currentState, setCurrentState] = useState(data?.state);
+  const [currentCity, setCurrentCity] = useState(data?.city);
+
+  const isCurrentCityInCities = (cities:  CityType[]): boolean => cities.some(
+    (city: CityType)=> currentCity ===city.city )
+
+  useEffect(()=> {if(cities.length>0 && !isCurrentCityInCities(cities)){
+    setCurrentCity(cities[0].city)
+  }})
+
+  /* const currentCity =
     currentState !== data?.state && cities.length > 0
       ? cities[0].city
-      : data?.city;
+      : data?.city; */
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -154,18 +164,21 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
                 labelId="select-city-label"
                 label="city"
                 id="select-city"
-                defaultValue={data?.city}
+                value={currentCity}
                 {...register("city")}
+                onChange={(e: SelectChangeEvent) => {
+                  setCurrentCity(e.target.value as string);
+                }}
                 error={!!errors.city}
               >
-                {cities.length > 0 ? (
+                {cities.length > 0 && isCurrentCityInCities(cities) ? (
                   cities.map(({ point_id, city }: any) => (
                     <MenuItem key={point_id} value={city}>
                       {city}
                     </MenuItem>
                   ))
                 ) : (
-                  <MenuItem value={data?.city}>{data?.city}</MenuItem>
+                  <MenuItem value={currentCity}>{currentCity}</MenuItem>
                 )}
               </Select>
               <FormHelperText>{errors.city?.message}</FormHelperText>

@@ -16,7 +16,7 @@ const Profile = () => {
   const userData = useSelector((state: RootStore): any => state.user);
   const token = useSelector((state: RootStore): any => state.token);
   const dispatch = useDispatch();
-  console.log(userData);
+
 
   useEffect(() => {
     dispatch(getParentByIdThunk(token.id, token.token));
@@ -83,7 +83,7 @@ const Profile = () => {
               >
                 Meu Perfil{" "}
               </Typography>
-              <FormProfile data={userData?.dataUser} readOnly={!updateMode} />
+              {userData?.dataUser && <FormProfile data={userData.dataUser} readOnly={!updateMode} />}
               <Typography> Produtos Cadastrados </Typography>
               <Button
                 variant="contained"
