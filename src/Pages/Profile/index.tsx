@@ -16,6 +16,7 @@ const Profile = () => {
   const userData = useSelector((state: RootStore): any => state.user);
   const token = useSelector((state: RootStore): any => state.token);
   const dispatch = useDispatch();
+  console.log(userData)
 
 
   useEffect(() => {
@@ -47,7 +48,7 @@ const Profile = () => {
                   overflow: "hidden",
                   height: "309px",
                   width: "309px",
-                  backgroundImage: `url(${Perfil})`,
+                  backgroundImage: `url(${userData?.dataUser?.image})`,
                   backgroundSize: `cover`,
                 }}
               />
