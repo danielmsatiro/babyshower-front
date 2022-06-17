@@ -43,6 +43,6 @@ export const logoutThunk =
 
     dispatch({
       type: TOKEN_SUCCESS,
-      payload: { access_token: undefined, id: undefined },
+      payload: { access_token: undefined, id: undefined, access_token_node: undefined },
     });
   };

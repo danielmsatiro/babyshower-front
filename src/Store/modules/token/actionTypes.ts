@@ -4,6 +4,7 @@ export const TOKEN_FAIL = "TOKEN_FAIL";
 
 export type TokenType = {
   access_token: string | undefined;
+  access_token_node: string | undefined
   id: number | undefined;
 };
 
