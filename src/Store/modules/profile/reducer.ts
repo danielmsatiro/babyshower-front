@@ -6,8 +6,6 @@ import {
 } from "./actionTypes";
 
 import { IUser } from "../../../interfaces/user";
-import jwt_decode, { JwtPayload } from "jwt-decode";
-import api from "../../../Services/api";
 
 interface DefaultStateI {
   loading: boolean;
@@ -18,6 +16,8 @@ const defaultState: DefaultStateI = {
   loading: false,
   dataUser: undefined,
 };
+
+console.log(defaultState)
 
 const parentReducer = (state = defaultState, action: ParentDispatchTypes) => {
   switch (action.type) {

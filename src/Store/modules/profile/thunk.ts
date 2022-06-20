@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { Dispatch } from "redux";
 import { IUser } from "../../../interfaces/user";
 import api from "../../../Services/api";
@@ -29,26 +30,31 @@ export const getParentByIdThunk =
     } catch (e) {
       dispatch({
         type: PARENT_FAIL,
+        payload: {}
       });
+      if((e as any).response.status===409){
+        toast.error("Já tem algum com este cpf")
+      }
       if((e as any).response.status===401){
         localStorage.removeItem("@Babyshower: token");
+        localStorage.removeItem("@Babyshower: tokenNode");
         window.location.reload()
       }
     }
   };
 
-export const updateParentById = (data: IUser, id: number, token: string) => 
+export const updateParentById = (data: Partial<IUser>, token: string): any => 
   async (dispatch: Dispatch<ParentDispatchTypes>) => {
     try{
       dispatch({
         type: PARENT_LOADING,
       });
-
-      const res: any = await api.patch(`/parents/${id}`, {
+      
+      const res: any = await api.patch(`/parents`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      }).then(res=> console.log(res.data));
 
       dispatch({
         type: PARENT_SUCCESS,
@@ -58,10 +64,12 @@ export const updateParentById = (data: IUser, id: number, token: string) =>
       dispatch({
         type: PARENT_FAIL,
       });
-      if((e as any).response.status===401){
+      console.log(e)
+      /* if((e as any).response.status===401){
         localStorage.removeItem("@Babyshower: token");
+        localStorage.removeItem("@Babyshower: tokenNode");
         window.location.reload()
-      }
+      } */
     }
   }
 

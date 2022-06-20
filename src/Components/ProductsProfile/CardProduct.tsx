@@ -12,8 +12,8 @@ export interface ICardProductProps  {
 
 const CardProduct = ({title, price, sold, questions, noAnswerQuestions, image=undefined}: ICardProductProps ) => {
     return (<>
-    <Grid container>
-        <Grid xs={2}></Grid>
+    {/* <Grid container>
+        <Grid item xs={2}></Grid>
         <Grid item xs={4}>
         <Typography>{title}</Typography>
         </Grid>
@@ -26,7 +26,7 @@ const CardProduct = ({title, price, sold, questions, noAnswerQuestions, image=un
         <Grid item  xs={2}>
         <Typography>{sold}</Typography>
         </Grid>
-    </Grid>
+    </Grid> */}
     </>)
 }
 

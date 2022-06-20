@@ -6,7 +6,7 @@ const ProductsProfile = () => {
     return (<>
     <Stack divider={<Divider orientation="horizontal" />}>
     <Grid container>
-        <Grid xs={2}>
+        <Grid item xs={2}>
         </Grid>
         <Grid item xs={4}>
         <Typography>Nome</Typography>

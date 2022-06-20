@@ -35,6 +35,7 @@ const defaultState: DefaultStateI = {
   ...decodedToken(),
   loading: false,
 };
+console.log(defaultState)
 
 const tokenReducer = (state = defaultState, action: TokenDispatchTypes) => {
   switch (action.type) {

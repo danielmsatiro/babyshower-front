@@ -7,7 +7,8 @@ export interface IUser {
   name: string;
   phone: string;
   products: string;
-  image: string; 
+  image: string | null;
+  image_key: string | null; 
   city: string;
   state: string;
 }

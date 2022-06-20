@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { states } from "../../constants";
 import { IUser } from "../../interfaces/user";
@@ -17,6 +18,7 @@ import { updateUserSchema } from "../../schemas/user/updateUser";
 import { RootStore } from "../../Store";
 import { CityType } from "../../Store/modules/cities/actionTypes";
 import { getCitiesByStateThunk } from "../../Store/modules/cities/thunk";
+import { getParentByIdThunk, updateParentById } from "../../Store/modules/profile/thunk";
 import { StyledInput, StyledLabel, StyledStack } from "./style";
 
 interface IFormProps {
@@ -31,8 +33,10 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
     handleSubmit,
   } = useForm<Partial<IUser>>({ resolver: yupResolver(updateUserSchema) });
 
+  const token = useSelector((state: RootStore): any => state.token);
+
   const handleUpdateProfile = (data: Partial<IUser>) => {
-    console.log(data);
+    //dispatch(updateParentById(data, token.token))
   };
 
   const cities = useSelector((state: RootStore): any => state.cities).cities;
@@ -54,6 +58,7 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
   }, [currentState]);
 
   return (
+    <>
     <Grid
       container
       spacing={4}
@@ -186,5 +191,7 @@ export const FormProfile = ({ data, readOnly }: IFormProps) => {
         </Stack>
       </Grid>
     </Grid>
+    <Toaster/>
+    </>
   );
 };
