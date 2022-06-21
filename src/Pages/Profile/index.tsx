@@ -1,45 +1,21 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  Grid,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import { Header } from "../../Components/Header";
 import { theme } from "../../Styles/theme";
 
-import { FormProfile } from "../../Components/FormProfile";
+import { ProductsProfile } from "../../Components/ProductsProfile";
+import FormProfile from "../../Components/FormProfile";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Store";
 import { useDispatch } from "react-redux";
 import { getParentByIdThunk } from "../../Store/modules/profile/thunk";
-import { ProductsProfile } from "../../Components/ProductsProfile";
-import { PaperComponent } from "./PaperComponent";
-import { UploadInput } from "../../Components/UploadInput";
-import { ListFilesUpload } from "../../Components/ListFilesUpload";
+import ImageProfile from "./ImageProfile";
 
 const Profile = () => {
   const [updateMode, setUpdateMode] = useState(false);
   const user = useSelector((state: RootStore): any => state.user);
   const token = useSelector((state: RootStore): any => state.token);
   const dispatch = useDispatch();
-  const [openUpload, setOpenUpload] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-
-  const handleUpload = (files: any): void => {
-    console.log(files);
-  };
-
-  const handleClickOpenUpload = () => {
-    setOpenUpload(true);
-  };
-
-  const handleCloseUpload = () => {
-    setOpenUpload(false);
-  };
 
   useEffect(() => {
     dispatch(getParentByIdThunk(token.id, token.token));
@@ -63,19 +39,7 @@ const Profile = () => {
         >
           <Grid item>
             <Stack spacing={2} alignItems={"center"}>
-              <IconButton onClick={handleClickOpenUpload}>
-                <Box
-                  border={`8px ${theme.palette.grey[100]} solid`}
-                  borderRadius={100}
-                  sx={{
-                    overflow: "hidden",
-                    height: "309px",
-                    width: "309px",
-                    backgroundImage: `url(${user?.dataUser?.image})`,
-                    backgroundSize: `cover`,
-                  }}
-                />
-              </IconButton>
+              <ImageProfile image={user?.dataUser?.image} />
               <Button
                 variant="contained"
                 sx={{ width: "133px" }}
@@ -124,23 +88,6 @@ const Profile = () => {
           </Grid>
         </Grid>
       </Box>
-      <Dialog
-        open={openUpload}
-        onClose={handleCloseUpload}
-        PaperComponent={PaperComponent}
-        aria-labelledby="draggable-dialog-title"
-      >
-        <Box
-          m={3}
-          width={"400px"}
-          minHeight={"150px"}
-          style={{ cursor: "move" }}
-          id="draggable-dialog-title"
-        >
-          <UploadInput handleUpload={handleUpload} />
-          <ListFilesUpload />
-        </Box>
-      </Dialog>
     </>
   );
 };

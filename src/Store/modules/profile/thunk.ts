@@ -30,31 +30,32 @@ export const getParentByIdThunk =
     } catch (e) {
       dispatch({
         type: PARENT_FAIL,
-        payload: {}
+        payload: {},
       });
-      if((e as any).response.status===409){
-        toast.error("Já tem algum com este cpf")
+      if ((e as any).response.status === 409) {
+        toast.error("Já tem algum com este cpf");
       }
-      if((e as any).response.status===401){
+      if ((e as any).response.status === 401) {
         localStorage.removeItem("@Babyshower: token");
         localStorage.removeItem("@Babyshower: tokenNode");
-        window.location.reload()
+        window.location.reload();
       }
     }
   };
 
-export const updateParentById = (data: Partial<IUser>, token: string): any => 
+export const updateParentById =
+  (data: Partial<IUser>, token: string): any =>
   async (dispatch: Dispatch<ParentDispatchTypes>) => {
-    try{
+    try {
       dispatch({
         type: PARENT_LOADING,
       });
-      
-      const res: any = await api.patch(`/parents`, {
+
+      const res: any = await api.patch(`/parents`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }).then(res=> console.log(res.data));
+      });
 
       dispatch({
         type: PARENT_SUCCESS,
@@ -64,12 +65,10 @@ export const updateParentById = (data: Partial<IUser>, token: string): any =>
       dispatch({
         type: PARENT_FAIL,
       });
-      console.log(e)
-      /* if((e as any).response.status===401){
+      if ((e as any).response?.status === 401) {
         localStorage.removeItem("@Babyshower: token");
         localStorage.removeItem("@Babyshower: tokenNode");
-        window.location.reload()
-      } */
+        window.location.reload();
+      }
     }
-  }
-
+  };

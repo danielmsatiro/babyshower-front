@@ -7,7 +7,7 @@ import {
 import jwt_decode, { JwtPayload } from "jwt-decode";
 
 interface DecodedTokenI {
-  tokenNode: string | undefined
+  tokenNode: string | undefined;
   token: string | undefined;
   id: number | undefined;
 }
@@ -18,14 +18,14 @@ interface DefaultStateI extends DecodedTokenI {
 
 const decodedToken = (): DecodedTokenI => {
   const token = localStorage.getItem("@Babyshower: token");
-  const tokenNode = localStorage.getItem("@Babyshowe: tokenNode")
+  const tokenNode = localStorage.getItem("@Babyshowe: tokenNode");
   if (token && tokenNode) {
     const decoded = jwt_decode<JwtPayload>(token);
 
     return {
       id: (decoded.sub as any)?.id,
       token,
-      tokenNode
+      tokenNode,
     };
   }
   return { token: undefined, id: undefined, tokenNode: undefined };
@@ -35,7 +35,6 @@ const defaultState: DefaultStateI = {
   ...decodedToken(),
   loading: false,
 };
-console.log(defaultState)
 
 const tokenReducer = (state = defaultState, action: TokenDispatchTypes) => {
   switch (action.type) {

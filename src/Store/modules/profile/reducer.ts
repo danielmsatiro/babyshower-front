@@ -17,8 +17,6 @@ const defaultState: DefaultStateI = {
   dataUser: undefined,
 };
 
-console.log(defaultState)
-
 const parentReducer = (state = defaultState, action: ParentDispatchTypes) => {
   switch (action.type) {
     case PARENT_FAIL:
@@ -27,6 +25,7 @@ const parentReducer = (state = defaultState, action: ParentDispatchTypes) => {
       return { ...defaultState, loading: true };
     case PARENT_SUCCESS:
       return {
+        ...defaultState,
         loading: false,
         dataUser: action.payload,
       };
