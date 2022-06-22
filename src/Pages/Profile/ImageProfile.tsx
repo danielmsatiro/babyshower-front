@@ -1,4 +1,4 @@
-import { Box, Dialog, IconButton } from "@mui/material";
+import { Box, Button, Dialog, IconButton, Stack } from "@mui/material";
 import { memo, useState } from "react";
 
 import { PaperComponent } from "./PaperComponent";
@@ -7,7 +7,12 @@ import { ListFilesUpload } from "../../Components/ListFilesUpload";
 import { v4 as uuid } from "uuid";
 import filesize from "filesize";
 import { theme } from "../../Styles/theme";
-import api from "../../Services/api";
+import apiNode from "../../Services/apiNode";
+import { useSelector } from "react-redux";
+import { RootStore } from "../../Store";
+import { IUser } from "../../interfaces/user";
+import { updateParentById } from "../../Store/modules/profile/thunk";
+import { useDispatch } from "react-redux";
 
 interface IFile {
   id: string | undefined;
@@ -23,11 +28,14 @@ interface IFile {
 
 interface ImageProfileProps {
   image: string;
+  key: string | undefined;
 }
 
-const ImageProfile = ({ image }: ImageProfileProps) => {
+//adicionar props com nome de file para compartilhar componente
+const ImageProfile = ({ image, key = undefined }: ImageProfileProps) => {
   const [openUpload, setOpenUpload] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<any>([]);
+  const token = useSelector((state: RootStore): any => state.token);
 
   const handleClickOpenUpload = () => {
     setOpenUpload(true);
@@ -52,15 +60,58 @@ const ImageProfile = ({ image }: ImageProfileProps) => {
       })
     );
 
-    /* const processUpload = (uploadedFile) => {
-      const data = new FormData();
+    setUploadedFiles([filesList[0]]);
+  };
 
-      data.append("image-profile", uploadedFile.file, uploadedFile.name);
+  const deleteFiles = (): void => {
+    setUploadedFiles([]);
+  };
 
-      api.post;
-    }; */
+  const dispatch = useDispatch();
 
-    setUploadedFiles([...uploadedFiles, ...filesList]);
+  const processUpload = async () => {
+    const data = new FormData();
+
+    data.append("image-profile", uploadedFiles[0].file, uploadedFiles[0].name);
+
+    await apiNode
+      .post("/upload", data, {
+        headers: {
+          Authorization: `Bearer ${token.tokenNode}`,
+        },
+        onUploadProgress: (e: ProgressEvent) => {
+          const load = e.loaded as number;
+          const progress = Math.abs((load * 100) / load);
+
+          setUploadedFiles([{ ...uploadedFiles[0], progress }]);
+        },
+      })
+      .then((res) => {
+        const { key, url } = res.data;
+        setUploadedFiles([]);
+        dispatch(updateParentById({ image_key: key, image: url }, token.token));
+      });
+  };
+
+  const onlyDelete = async () => {
+    if (key) {
+      await apiNode
+        .put(
+          "/upload",
+          { key },
+          {
+            headers: {
+              Authorization: `Bearer ${token.tokenNode}`,
+            },
+          }
+        )
+        .then((_) => {
+          setUploadedFiles([]);
+          dispatch(
+            updateParentById({ image_key: null, image: null }, token.token)
+          );
+        });
+    }
   };
 
   return (
@@ -84,16 +135,32 @@ const ImageProfile = ({ image }: ImageProfileProps) => {
         PaperComponent={PaperComponent}
         aria-labelledby="draggable-dialog"
       >
-        <Box
+        <Stack
           m={3}
           width={"400px"}
           minHeight={"150px"}
           style={{ cursor: "move" }}
           id="draggable-dialog-title"
+          justifyContent={"space-around"}
         >
           <UploadInput handleUpload={handleUpload} />
-          {!!uploadedFiles.length && <ListFilesUpload files={uploadedFiles} />}
-        </Box>
+          {!!uploadedFiles.length && (
+            <ListFilesUpload
+              files={uploadedFiles}
+              processUpload={processUpload}
+              deleteFiles={deleteFiles}
+            />
+          )}
+          {!uploadedFiles.length && !key && (
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={() => onlyDelete()}
+            >
+              Somente excluir
+            </Button>
+          )}
+        </Stack>
       </Dialog>
     </>
   );

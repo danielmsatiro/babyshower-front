@@ -8,6 +8,7 @@ export const Container = styled.ul`
     justify-content: space-between;
     align-items: center;
     color: #444;
+    font-size: 22px;
 
     & + li {
       margin-top: 15px;
@@ -16,25 +17,29 @@ export const Container = styled.ul`
 `;
 
 export const FileInfo = styled.div`
-  display: flex ;
-  align-items: center
-
+  display: flex;
+  align-items: center;
   div {
-      display: flex;
-      flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-      span {
-          font-size: 12px
-          color: #999
-          margin-top: 5px
+    span {
+      font-size: 16px;
+      font-weight: bold;
+      color: #777;
+      margin-top: 5px;
 
-        button {
-            border: 0;
-            background: transparent;
-            color: #e57878;
-            cursor: pointer;
-        }          
+      button {
+        border: 0;
+        cursor: pointer;
+        padding: 0;
+        font-size: 12px;
+
+        & + button {
+          margin-left: 15px;
+        }
       }
+    }
   }
 `;
 

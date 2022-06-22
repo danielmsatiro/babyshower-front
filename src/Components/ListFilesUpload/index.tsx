@@ -6,12 +6,19 @@ import { Container, FileInfo, Preview } from "./styles";
 import "react-circular-progressbar/dist/styles.css";
 import { CheckCircle, Error, Link } from "@mui/icons-material";
 import { theme } from "../../Styles/theme";
+import { Button } from "@mui/material";
 
 interface ListFilesUploadProps {
   files: any[];
+  deleteFiles: () => void;
+  processUpload: () => void;
 }
 
-export const ListFilesUpload = ({ files }: ListFilesUploadProps) => (
+export const ListFilesUpload = ({
+  files,
+  deleteFiles,
+  processUpload,
+}: ListFilesUploadProps) => (
   <Container>
     {files.map((uploadedFile) => (
       <li>
@@ -20,9 +27,25 @@ export const ListFilesUpload = ({ files }: ListFilesUploadProps) => (
           <div>
             <strong>{uploadedFile.name}</strong>
             <span>
-              {uploadedFile.readebleSize}{" "}
-              <button onClick={() => {}}>Excluir</button>
-              <button onClick={() => {}}>Enviar</button>
+              {uploadedFile.readableSize}{" "}
+              {uploadedFile.progress === 0 && (
+                <Button
+                  variant="contained"
+                  color="warning"
+                  onClick={() => deleteFiles()}
+                >
+                  Excluir
+                </Button>
+              )}
+              {uploadedFile.progress === 0 && (
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={() => processUpload()}
+                >
+                  Enviar
+                </Button>
+              )}
             </span>
           </div>
         </FileInfo>

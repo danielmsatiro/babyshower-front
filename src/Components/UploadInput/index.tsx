@@ -14,13 +14,13 @@ export const UploadInput = ({ handleUpload }: UploadInputProps) => {
 
   const renderDragMessage = (isDragActive: boolean, isDragReject: boolean) => {
     if (!isDragActive) {
-      return <UploadMessage>Arraste arquivos aqui...</UploadMessage>;
+      return <UploadMessage>Arraste o arquivo aqui...</UploadMessage>;
     }
 
     if (isDragReject) {
       return <UploadMessage type="error">Arquivo não suportado</UploadMessage>;
     }
-    return <UploadMessage type="success">Solte os arquivos aqui</UploadMessage>;
+    return <UploadMessage type="success">Solte o arquivo aqui</UploadMessage>;
   };
 
   return (

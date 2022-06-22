@@ -39,7 +39,10 @@ const Profile = () => {
         >
           <Grid item>
             <Stack spacing={2} alignItems={"center"}>
-              <ImageProfile image={user?.dataUser?.image} />
+              <ImageProfile
+                image={user?.dataUser?.image}
+                key={user?.dataUser?.image}
+              />
               <Button
                 variant="contained"
                 sx={{ width: "133px" }}
@@ -76,7 +79,7 @@ const Profile = () => {
                 <FormProfile data={user.dataUser} readOnly={!updateMode} />
               )}
               <Typography> Produtos Cadastrados </Typography>
-              <ProductsProfile />
+              {/* <ProductsProfile /> */}
               <Button
                 variant="contained"
                 color={"success"}
