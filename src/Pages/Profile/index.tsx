@@ -1,14 +1,25 @@
 import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import { Header } from "../../Components/Header";
 import { theme } from "../../Styles/theme";
-import Perfil from "../../Assets/perfil.jpg";
 
-import { FormProfile } from "../../Components/FormProfile";
-import { useState } from "react";
-import { products, user } from "../../constants";
+import { ProductsProfile } from "../../Components/ProductsProfile";
+import FormProfile from "../../Components/FormProfile";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootStore } from "../../Store";
+import { useDispatch } from "react-redux";
+import { getParentByIdThunk } from "../../Store/modules/profile/thunk";
+import ImageProfile from "./ImageProfile";
 
 const Profile = () => {
   const [updateMode, setUpdateMode] = useState(false);
+  const user = useSelector((state: RootStore): any => state.user);
+  const token = useSelector((state: RootStore): any => state.token);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getParentByIdThunk(token.id, token.token));
+  }, []);
 
   return (
     <>
@@ -28,16 +39,9 @@ const Profile = () => {
         >
           <Grid item>
             <Stack spacing={2} alignItems={"center"}>
-              <Box
-                border={`8px ${theme.palette.grey[100]} solid`}
-                borderRadius={100}
-                sx={{
-                  overflow: "hidden",
-                  height: "309px",
-                  width: "309px",
-                  backgroundImage: `url(${Perfil})`,
-                  backgroundSize: `cover`,
-                }}
+              <ImageProfile
+                image={user?.dataUser?.image}
+                key={user?.dataUser?.image}
               />
               <Button
                 variant="contained"
@@ -71,8 +75,11 @@ const Profile = () => {
               >
                 Meu Perfil{" "}
               </Typography>
-              <FormProfile data={user} readOnly={!updateMode} />
+              {user?.dataUser && (
+                <FormProfile data={user.dataUser} readOnly={!updateMode} />
+              )}
               <Typography> Produtos Cadastrados </Typography>
+              {/* <ProductsProfile /> */}
               <Button
                 variant="contained"
                 color={"success"}

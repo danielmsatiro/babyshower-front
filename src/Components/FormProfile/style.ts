@@ -11,7 +11,7 @@ const StyledInput = styled(Input)(({ theme, readOnly }) => ({
     width: "100%",
     fontSize: "24px",
     padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    paddingLeft: `${theme.spacing(2)}`,
     "&::placeholder": {
       color: `black`,
     },

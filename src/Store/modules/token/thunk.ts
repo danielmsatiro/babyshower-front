@@ -24,6 +24,7 @@ export const getTokenThunk =
 
       const res: any = await api.post(`/parents/login`, credentials);
       localStorage.setItem("@Babyshower: token", res.data.access_token);
+      localStorage.setItem("@Babyshower: tokenNode", res.data.access_token_node);
 
       dispatch({
         type: TOKEN_SUCCESS,
@@ -39,9 +40,10 @@ export const getTokenThunk =
 export const logoutThunk =
   (): any => async (dispatch: Dispatch<TokenDispatchTypes>) => {
     localStorage.removeItem("@Babyshower: token");
+    localStorage.removeItem("@Babyshower: tokenNode");
 
     dispatch({
       type: TOKEN_SUCCESS,
-      payload: { access_token: undefined, id: undefined },
+      payload: { access_token: undefined, id: undefined, access_token_node: undefined },
     });
   };
