@@ -1,37 +1,70 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import "./conversation.css";
+import api from "../../../../Services/api";
+import { Container } from "./style";
 
-export default function Conversation({ conversation, currentUser }: any) {
-  const [user, setUser] = useState<any>(null);
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+interface IConversationProps {
+  conversation: any;
+  newMessage: any;
+  socket: any;
+  currentChat:any;
+  setMessages:any;
+  setNewMessage:any;
+  messages: any
+}
 
+
+const Conversation = ({conversation, newMessage, socket, currentChat, setMessages, setNewMessage, messages}: IConversationProps) =>  {
+  
+  const [chatCurrent, setchatCurrent] = useState<any>(null);
+  const currentUser = null;
+  const user: any = {}
+  
   useEffect(() => {
-    const friendId = conversation.members.find((m: any) => m !== currentUser._id);
 
-    const getUser = async () => {
+    const chatId: string = "";
+
+    const getUserChatCurrent = async () => {
       try {
-        const res = await axios("/users?userId=" + friendId);
-        setUser(res.data);
+        const res = await api.get(`/chat/${chatId}`);
+        setchatCurrent(res.data);
       } catch (err) {
         console.log(err);
       }
     };
-    getUser();
+    getUserChatCurrent();
   }, [currentUser, conversation]);
 
+
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    const message = {
+      message: newMessage,
+    };
+
+    const receiverId = currentChat.members.find(
+      (member: any) => member !== user._id
+    );
+
+    socket.current.emit("sendMessage", {
+      senderId: user._id,
+      receiverId,
+      text: newMessage,
+    });
+
+    try {
+      const res = await api.post("/chat", message);
+      setMessages([...messages, res.data]);
+      setNewMessage("");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
-    <div className="conversation">
-      <img
-        className="conversationImg"
-        src={
-          user?.profilePicture
-            ? PF + user.profilePicture
-            : PF + "person/noAvatar.png"
-        }
-        alt=""
-      />
-      <span className="conversationName">{user?.username}</span>
-    </div>
+    <Container>
+      <span>{chatCurrent?.username}</span>
+    </Container>
   );
 }
+
+export default Conversation
