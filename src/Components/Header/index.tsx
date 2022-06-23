@@ -197,7 +197,7 @@ export const Header = () => {
                 direction={"row"}
                 justifyContent="end"
               >
-                <Button>Chat</Button>
+                <Button onClick={() => history.push("/chat")}>Chat</Button>
                 <Button
                   aria-label="account of current user"
                   aria-controls={menuId}

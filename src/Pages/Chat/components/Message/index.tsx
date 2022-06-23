@@ -1,18 +1,27 @@
 import { format } from "timeago.js";
-import { Container } from "./styled";
+import { Container, Content, Preview, Sentence } from "./styled";
 
 interface IMessageProps {
-  message: any
-  own: any
+  message: any;
+  image: string;
+  logged: boolean;
 }
 
-const Message = ({ message, own }: IMessageProps) =>  {
+const Message = ({ message, image, logged }: IMessageProps) => {
   return (
-    <Container>
-      <p className="messageText">{message.text}</p>
-      <div>{format(message.createdAt)}</div>
+    <Container logged={logged}>
+      <Content>
+        <Preview src={image} />
+        <Sentence logged={logged}>
+          <div>
+            {message.text}
+
+            <span>{format(message.createdAt)}</span>
+          </div>
+        </Sentence>
+      </Content>
     </Container>
   );
-}
+};
 
-export default Message
+export default Message;
