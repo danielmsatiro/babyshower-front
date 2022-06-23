@@ -5,7 +5,7 @@ import Message from "../Message";
 import { Container } from "./style";
 import ScrollToBottom from "react-scroll-to-bottom";
 import { Input } from "@material-ui/core";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 
 interface IMessage {
   text: string;
@@ -63,7 +63,8 @@ const Conversation = ({messages, currentChat, setMessages, socket}: IConversatio
           return (<Message image={image} message={message.message} logged={owner} key={message.id} />)
         })
       }
-      <TextField id="outlined-basic" label="Outlined" variant="outlined" fullWidth/>
+      <TextField id="outlined-basic" label="Outlined" variant="outlined" onChange={(e) => setNewMessage(e.target.value)} style={{width:"80%"}}/>
+      <Button color="primary" style={{background: "green", color: "white", width:"20%", height: "60px"}}> Sent </Button>      
     </Container>
   );
 };
