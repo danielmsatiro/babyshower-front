@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Header } from "../../Components/Header";
@@ -7,6 +7,7 @@ import { RootStore } from "../../Store";
 import ChatConversations from "./components/ChatConversations";
 import Conversation from "./components/Conversation";
 import { ChatMenuFriends, Content } from "./style";
+import logo from "../../Assets/logo-baby-shower.svg";
 
 const ChatMessager = () => {
   const [currentChat, _] = useState<any>(null);
@@ -83,8 +84,20 @@ const ChatMessager = () => {
       <Grid container p={4} sx={{ background: "#F3F3F3" }}>
         <Grid item width={"400px"}>
           <ChatMenuFriends>
-            <Box></Box>
-            <ChatConversations conversations={conversations} />
+            <Grid container justifyContent={"center"}>
+              <Box
+                mt={4}
+                borderRadius={100}
+                sx={{
+                  overflow: "hidden",
+                  height: "200px",
+                  width: "200px",
+                  backgroundImage: `url(${"https://babyshower-upload.s3.sa-east-1.amazonaws.com/image-profile%40%242b%2410%24qKGIigvivA1HZhaHgPsZpuKpaskSnc87aRBoZjpjh4URb0kvJHF0W"})`,
+                  backgroundSize: `cover`,
+                }}
+              />
+              <ChatConversations conversations={conversations} />
+            </Grid>
           </ChatMenuFriends>
         </Grid>
         <Grid item flex={1}>
