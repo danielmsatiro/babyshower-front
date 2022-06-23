@@ -11,7 +11,6 @@ interface IMessage {
 }
 
 interface IConversationProps {
-  conversation: any;
   newMessage: any;
   socket: any;
   currentChat: any;
@@ -21,7 +20,6 @@ interface IConversationProps {
 }
 
 const Conversation = ({
-  conversation,
   newMessage,
   socket,
   currentChat,
@@ -58,7 +56,7 @@ const Conversation = ({
       }
     };
     getUserChatCurrent();
-  }, [currentUser, conversation]);
+  }, [currentUser]);
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();

@@ -1,27 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
+import { useSelector } from "react-redux";
 import { Header } from "../../Components/Header";
-import api from "../../Services/api";
+import apiNode from "../../Services/apiNode";
+import { RootStore } from "../../Store";
 import ChatConversations from "./components/ChatConversations";
 import Conversation from "./components/Conversation";
 import { ChatMenuFriends, Content } from "./style";
 
 
 const ChatMessager = () => {
+
+  const [currentChat, _] = useState<any>(null);
   const [conversations, setConversations] = useState([]);
-  const [currentChat, setCurrentChat] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [arrivalMessage, setArrivalMessage] = useState<any>(null);
   const socket: any = useRef();
-  const scrollRef: any = useRef();
 
-  const user = {
-    _id: 1,
-    followings: [],
-    username: "hirton"
-  }
-
+/*
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
     socket.current.on("getMessage", (data: any) => {
@@ -40,31 +35,45 @@ const ChatMessager = () => {
 
   useEffect(() => {
     socket.current.emit("addUser", user._id);
-  }, [user]);
+  }, [user]); 
+
 
   useEffect(() => {
     const getConversations = async () => {
-      try {
-        const res = await api.get("/chat")
-        setConversations(res.data);
-      } catch (err) {
-        console.log(err);
-      }
+        await apiNode.get("/chat", {
+          headers: {
+            Authorization: `Bearer ${token.tokenNode}`,
+          },
+        })
+        .then((res) => setConversations(res.data))
+        .catch((err) => console.log(err))
     };
     getConversations();
   }, [user._id]);
+*/
 
   useEffect(() => {
     const getMessages = async () => {
-      try {
-        const res = await api.get("/chat/" + currentChat?._id);
-        setMessages(res.data);
-      } catch (err) {
-        console.log(err);
-      }
+        await apiNode.get("/chat/" + "81d56a9f-119a-4877-b98f-d825530ae930")
+        .then((response) => setMessages(response.data))
+        .catch((err) => {})
     };
     getMessages();
-  }, [currentChat]);
+  }, []);
+  
+  useEffect(() => {
+    const getConversations = async () => {
+        await apiNode.get("/chat")
+        .then((res) => setConversations(res.data))
+        .catch((err) => {})
+    };
+    getConversations();
+  }, []);
+
+  useEffect(() => {
+    console.log(conversations)
+    console.log(messages)
+  }, [messages, conversations])
 
   return (
     <>
@@ -74,13 +83,11 @@ const ChatMessager = () => {
 
         <ChatMenuFriends>
           <ChatConversations
-            currentId={user._id}
-            setCurrentChat={setCurrentChat}
+          conversations={conversations}
           />
         </ChatMenuFriends>
 
         <Conversation
-        conversation={conversations}
         currentChat={currentChat}
         messages={messages}
         newMessage={newMessage}
@@ -90,7 +97,8 @@ const ChatMessager = () => {
         />
 
       </Content>
-    </>
+
+    </> 
   );
 }
 
