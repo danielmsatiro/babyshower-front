@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import Message from "../Message";
 import { Container } from "./style";
 import { Button, TextField } from "@mui/material";
@@ -14,11 +14,11 @@ interface IConversationProps {
 
 const Conversation = ({
   messages,
-  currentChat,
   setMessages,
   socket
 }: IConversationProps) => {
   const [newMessage, setNewMessage] = useState<string>("");
+  const [refresh, setRefresh] = useState(false)
 
   const handleSubmit = async () => {
     const message = {
@@ -38,17 +38,24 @@ const Conversation = ({
       console.log("messagem enviada com sucesso");
       setMessages([...messages, res.data]);
       setNewMessage("");
+      setRefresh(true)
     } catch (err) {
       console.log(err);
     }
   };
 
-  const bottomRef = useRef(null);
+  const bottomRef: any = useRef(null);
 
-  /* useEffect(() => {
-    // 👇️ scroll to bottom every time messages change
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]); */
+  }, [messages]);
+
+  useEffect(() => {
+    const msgs = messages
+    msgs.push(newMessage)
+    socket.on('chat.message', msgs)
+    return () => socket.off('chat.message', msgs)
+}, [refresh])
 
   return (
     <Container>

@@ -17,7 +17,8 @@ const ChatMessager = () => {
   const [conversations, setConversations] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState<any>(null);
   const [messages, setMessages] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(true);
+  const [loadingChats, setLoadingChats] = useState(true);
 
   useEffect(() => {
     arrivalMessage &&
@@ -52,7 +53,7 @@ const ChatMessager = () => {
         .get("/chat/" + "81d56a9f-119a-4877-b98f-d825530ae930")
         .then((response) => {
           setMessages(response.data.messages);
-          setLoading(false);
+          setLoadingMessages(false);
         })
         .catch((err) => {});
     };
@@ -63,7 +64,10 @@ const ChatMessager = () => {
     const getConversations = async () => {
       await apiNode
         .get("/chat")
-        .then((res) => setConversations(res.data))
+        .then((res) => {
+          setConversations(res.data.chats);
+          setLoadingChats(false);
+        })
         .catch((err) => {});
     };
     getConversations();
@@ -88,12 +92,14 @@ const ChatMessager = () => {
                   backgroundSize: `cover`,
                 }}
               />
-              <ChatConversations conversations={conversations} />
+              {!loadingChats && (
+                <ChatConversations conversations={conversations} />
+              )}
             </Grid>
           </ChatMenuFriends>
         </Grid>
         <Grid item flex={1}>
-          {!loading && (
+          {!loadingMessages && (
             <Conversation
               messages={messages}
               currentChat={currentChat}
