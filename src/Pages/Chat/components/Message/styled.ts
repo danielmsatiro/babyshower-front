@@ -8,9 +8,14 @@ interface ContainerProps {
 
 export const Container = styled.div<ContainerProps>`
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${(props) => (props.logged ? `end` : `start`)};
   min-height: 102px;
   margin: 20px 10px;
+`;
+
+export const Content = styled.div`
+  display: flex;
+  width: 355px;
 `;
 
 interface SentenceProps {

@@ -1,5 +1,5 @@
 import { format } from "timeago.js";
-import { Container, Preview, Sentence } from "./styled";
+import { Container, Content, Preview, Sentence } from "./styled";
 
 interface IMessageProps {
   message: any;
@@ -9,15 +9,17 @@ interface IMessageProps {
 
 const Message = ({ message, image, logged }: IMessageProps) => {
   return (
-    <Container>
-      <Preview src={image} />
-      <Sentence logged={logged}>
-        <div>
-          {message.text}
+    <Container logged={logged}>
+      <Content>
+        <Preview src={image} />
+        <Sentence logged={logged}>
+          <div>
+            {message.text}
 
-          <span>{format(message.createdAt)}</span>
-        </div>
-      </Sentence>
+            <span>{format(message.createdAt)}</span>
+          </div>
+        </Sentence>
+      </Content>
     </Container>
   );
 };
