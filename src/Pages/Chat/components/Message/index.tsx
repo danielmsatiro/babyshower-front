@@ -11,7 +11,7 @@ const Message = ({ message, image, logged }: IMessageProps) => {
   return (
     <Container logged={logged}>
       <Content>
-        <Preview src={image} />
+        {!logged && <Preview src={image} />}
         <Sentence logged={logged}>
           <div>
             {message.text}
@@ -19,6 +19,7 @@ const Message = ({ message, image, logged }: IMessageProps) => {
             <span>{format(message.createdAt)}</span>
           </div>
         </Sentence>
+        {logged && <Preview src={image} />}
       </Content>
     </Container>
   );
