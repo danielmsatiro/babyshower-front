@@ -1,6 +1,5 @@
-import { Stack } from "@mui/material";
-import { format } from "timeago.js";
-import { Container, Content, Preview, Sentence } from "./styled";
+import { Box, Stack } from "@mui/material";
+import { Container, Content, Preview } from "./styled";
 
 interface IChatOpenProps {
   username: string;
@@ -14,11 +13,30 @@ const ChatOpen = ({ username, lastMessage, image, noRead }: IChatOpenProps) => {
     <Container>
       <Content>
         <Preview src={image} />
-        <Stack>
-          <Stack>{username}</Stack>
+        <Stack justifyContent={"center"} flex={1}>
+          <Stack sx={{ fontSize: "22px", fontWeight: "bold" }}>
+            {username}
+          </Stack>
           <Stack>{lastMessage}</Stack>
         </Stack>
-        <span>{noRead}</span>
+        {noRead > 0 && (
+          <Stack pr={6}>
+            <Box
+              sx={{
+                fontWeight: "bold",
+                background: "red",
+                minWidth: "20px",
+                height: "20px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "5px",
+              }}
+            >
+              {noRead}
+            </Box>
+          </Stack>
+        )}
       </Content>
     </Container>
   );

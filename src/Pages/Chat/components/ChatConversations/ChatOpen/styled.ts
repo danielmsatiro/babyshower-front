@@ -15,7 +15,11 @@ export const Container = styled.div<ContainerProps>`
 
 export const Content = styled.div`
   display: flex;
+  align-items: center;
+  justify-content: space-around;
   width: 355px;
+  font-family: ${theme.typography.body1.fontFamily};
+  color: white;
 `;
 
 interface SentenceProps {
@@ -26,7 +30,6 @@ interface SentenceProps {
 export const Sentence = styled.div<SentenceProps>`
   background: ${(props) => (props.logged ? `#444444` : `#DCE7E5`)};
   border-radius: 20px;
-  width: 271px;
   min-height: 102px;
   color: ${(props) => (props.logged ? `#DCE7E5` : `#444444`)};
   div {
