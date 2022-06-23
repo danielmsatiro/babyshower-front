@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useRef, useState } from "react";
 import Message from "../Message";
 import { Container } from "./style";
 import { Button, TextField } from "@mui/material";
@@ -43,6 +43,13 @@ const Conversation = ({
     }
   };
 
+  const bottomRef = useRef(null);
+
+  /* useEffect(() => {
+    // 👇️ scroll to bottom every time messages change
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]); */
+
   return (
     <Container>
       {messages.map((message: any) => {
@@ -75,6 +82,7 @@ const Conversation = ({
       >
         Sent
       </Button>
+      <div ref={bottomRef}></div>
     </Container>
   );
 };
