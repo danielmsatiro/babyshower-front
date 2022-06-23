@@ -11,52 +11,21 @@ interface IMessage {
 }
 
 interface IConversationProps {
-  newMessage: any;
   socket: any;
   currentChat: any;
   setMessages: any;
-  setNewMessage: any;
   messages: any;
 }
 
-const Conversation = ({
-  newMessage,
-  socket,
-  currentChat,
-  setMessages,
-  setNewMessage,
-  messages,
-}: IConversationProps) => {
+const Conversation = ({messages, currentChat, setMessages, socket}: IConversationProps) => {
+
+  const [newMessage, setNewMessage] = useState<any>(null)
   const [chatCurrent, setchatCurrent] = useState<any>(null);
   const currentUser = 1;
   const user: any = 1;
 
-  //entendo que currentUser mudará a cada menssagem então:
-  //e que user é quem está logado
-  //Então definimos se o dono da mensagem é quem está logado:
-  const logged = currentUser === user;
-
-  //coloquei essa variável, Hirton. Verificar onde você quer incluir
   const image =
     "https://babyshower-upload.s3.sa-east-1.amazonaws.com/image-profile%40%242b%2410%24qKGIigvivA1HZhaHgPsZpuKpaskSnc87aRBoZjpjh4URb0kvJHF0W";
-  const MockedMessage: IMessage = {
-    text: "Olá tudo bem?",
-    createdAt: "Fri, 06 May 2022 11:14:11 GMT",
-  };
-
-  useEffect(() => {
-    const chatId: string = "";
-
-    const getUserChatCurrent = async () => {
-      try {
-        const res = await api.get(`/chat/${chatId}`);
-        setchatCurrent(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getUserChatCurrent();
-  }, [currentUser]);
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
@@ -85,18 +54,13 @@ const Conversation = ({
 
   return (
     <Container>
-      {/* Inclusão mockada pra ver o resultado */}
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={false} />
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={false} />
-      <Message message={MockedMessage} image={image} logged={false} />
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={false} />
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={false} />
+      {
+        messages.map((message: any) => {
+          console.log(message)
+          const owner = message.parent_id === 1 ? true : false
+          return (<Message image={image} message={message.message} logged={owner} key={message.id} />)
+        })
+      }
     </Container>
   );
 };

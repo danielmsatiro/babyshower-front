@@ -12,7 +12,8 @@ const ChatMessager = () => {
 
   const [currentChat, _] = useState<any>(null);
   const [conversations, setConversations] = useState([]);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any>(null);
+  const [loading, setLoading] = useState(true)
   const [newMessage, setNewMessage] = useState("");
   const socket: any = useRef();
 
@@ -55,7 +56,10 @@ const ChatMessager = () => {
   useEffect(() => {
     const getMessages = async () => {
         await apiNode.get("/chat/" + "81d56a9f-119a-4877-b98f-d825530ae930")
-        .then((response) => setMessages(response.data))
+        .then((response) => {
+          setMessages(response.data.messages)
+          setLoading(false)
+        })
         .catch((err) => {})
     };
     getMessages();
@@ -70,31 +74,19 @@ const ChatMessager = () => {
     getConversations();
   }, []);
 
-  useEffect(() => {
-    console.log(conversations)
-    console.log(messages)
-  }, [messages, conversations])
-
   return (
     <>
       <Header />
 
       <Content>
 
-        <ChatMenuFriends>
-          <ChatConversations
-          conversations={conversations}
-          />
-        </ChatMenuFriends>
-
-        <Conversation
-        currentChat={currentChat}
-        messages={messages}
-        newMessage={newMessage}
-        setMessages={setMessages}
-        setNewMessage={setNewMessage}
-        socket={socket}
-        />
+      {!loading && 
+      <Conversation
+      messages={messages}
+      currentChat={currentChat}
+      setMessages={setMessages}
+      socket={socket}
+      />}
 
       </Content>
 

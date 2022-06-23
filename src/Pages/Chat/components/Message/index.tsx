@@ -14,8 +14,7 @@ const Message = ({ message, image, logged }: IMessageProps) => {
         <Preview src={image} />
         <Sentence logged={logged}>
           <div>
-            {message.text}
-
+            {message}
             <span>{format(message.createdAt)}</span>
           </div>
         </Sentence>
