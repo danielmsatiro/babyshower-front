@@ -1,3 +1,4 @@
+import { Box, Grid } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Header } from "../../Components/Header";
@@ -7,16 +8,14 @@ import ChatConversations from "./components/ChatConversations";
 import Conversation from "./components/Conversation";
 import { ChatMenuFriends, Content } from "./style";
 
-
 const ChatMessager = () => {
-
   const [currentChat, _] = useState<any>(null);
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const socket: any = useRef();
 
-/*
+  /*
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
     socket.current.on("getMessage", (data: any) => {
@@ -54,52 +53,53 @@ const ChatMessager = () => {
 
   useEffect(() => {
     const getMessages = async () => {
-        await apiNode.get("/chat/" + "81d56a9f-119a-4877-b98f-d825530ae930")
+      await apiNode
+        .get("/chat/" + "81d56a9f-119a-4877-b98f-d825530ae930")
         .then((response) => setMessages(response.data))
-        .catch((err) => {})
+        .catch((err) => {});
     };
     getMessages();
   }, []);
-  
+
   useEffect(() => {
     const getConversations = async () => {
-        await apiNode.get("/chat")
+      await apiNode
+        .get("/chat")
         .then((res) => setConversations(res.data))
-        .catch((err) => {})
+        .catch((err) => {});
     };
     getConversations();
   }, []);
 
   useEffect(() => {
-    console.log(conversations)
-    console.log(messages)
-  }, [messages, conversations])
+    console.log(conversations);
+    console.log(messages);
+  }, [messages, conversations]);
 
   return (
     <>
       <Header />
 
-      <Content>
-
-        <ChatMenuFriends>
-          <ChatConversations
-          conversations={conversations}
+      <Grid container p={4} sx={{ background: "#F3F3F3" }}>
+        <Grid item width={"400px"}>
+          <ChatMenuFriends>
+            <Box></Box>
+            <ChatConversations conversations={conversations} />
+          </ChatMenuFriends>
+        </Grid>
+        <Grid item flex={1}>
+          <Conversation
+            currentChat={currentChat}
+            messages={messages}
+            newMessage={newMessage}
+            setMessages={setMessages}
+            setNewMessage={setNewMessage}
+            socket={socket}
           />
-        </ChatMenuFriends>
-
-        <Conversation
-        currentChat={currentChat}
-        messages={messages}
-        newMessage={newMessage}
-        setMessages={setMessages}
-        setNewMessage={setNewMessage}
-        socket={socket}
-        />
-
-      </Content>
-
-    </> 
+        </Grid>
+      </Grid>
+    </>
   );
-}
+};
 
-export default ChatMessager
+export default ChatMessager;
