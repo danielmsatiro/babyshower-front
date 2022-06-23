@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import api from "../../../../Services/api";
 import Message from "../Message";
 import { Container } from "./style";
-import ScrollToBottom from "react-scroll-to-bottom";
 
 interface IMessage {
   text: string;
@@ -83,9 +82,17 @@ const Conversation = ({
     }
   };
 
+  const bottomRef = useRef(null);
+
+  /* useEffect(() => {
+    // 👇️ scroll to bottom every time messages change
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]); */
+
   return (
     <Container>
       {/* Inclusão mockada pra ver o resultado */}
+
       <Message message={MockedMessage} image={image} logged={true} />
       <Message message={MockedMessage} image={image} logged={false} />
       <Message message={MockedMessage} image={image} logged={true} />
@@ -97,6 +104,7 @@ const Conversation = ({
       <Message message={MockedMessage} image={image} logged={true} />
       <Message message={MockedMessage} image={image} logged={true} />
       <Message message={MockedMessage} image={image} logged={false} />
+      <div ref={bottomRef}></div>
     </Container>
   );
 };
