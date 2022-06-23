@@ -3,7 +3,6 @@ import api from "../../../../Services/api";
 import { Container } from "./style";
 
 interface IConversationProps {
-  conversation: any;
   newMessage: any;
   socket: any;
   currentChat:any;
@@ -13,7 +12,7 @@ interface IConversationProps {
 }
 
 
-const Conversation = ({conversation, newMessage, socket, currentChat, setMessages, setNewMessage, messages}: IConversationProps) =>  {
+const Conversation = ({newMessage, socket, currentChat, setMessages, setNewMessage, messages}: IConversationProps) =>  {
   
   const [chatCurrent, setchatCurrent] = useState<any>(null);
   const currentUser = null;
@@ -32,7 +31,7 @@ const Conversation = ({conversation, newMessage, socket, currentChat, setMessage
       }
     };
     getUserChatCurrent();
-  }, [currentUser, conversation]);
+  }, [currentUser]);
 
 
   const handleSubmit = async (e: Event) => {

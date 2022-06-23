@@ -1,26 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "./style";
 import "./style.ts";
 
-interface IChatConversationsProps {
-  currentId: number
-  setCurrentChat: any;
-}
+const ChatConversations = ({ conversations }: any) => {
+  const [_, setChatList] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-const ChatConversations = ({ currentId, setCurrentChat }: IChatConversationsProps) =>  {
-  
-  const [friends, setFriends] = useState<any>([]);
+  useEffect(() => {
+    setChatList(conversations);
+    setLoading(false);
+  }, [conversations]);
 
   return (
-    <Container>
-      <h3>Conversas</h3>
-      <ul>
-      {
-        friends.map((user: any) => <h1>{user.username}</h1>)
-      }
-      </ul>
-    </Container>
+    <Container>{loading ? <h1>Loading</h1> : <h1>Conversas</h1>}</Container>
   );
-}
+};
 
-export default ChatConversations
+export default ChatConversations;
