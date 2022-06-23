@@ -1,34 +1,31 @@
 import { Box, Grid } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 import { Header } from "../../Components/Header";
 import apiNode from "../../Services/apiNode";
 import ChatConversations from "./components/ChatConversations";
 import Conversation from "./components/Conversation";
 import { ChatMenuFriends } from "./style";
 
+const socket = io("http://localhost:8080");
+socket.on("connect", () =>
+  console.log("[IO] Connect => A new connection has been established")
+);
+
 const ChatMessager = () => {
   const [currentChat, _] = useState<any>(null);
   const [conversations, setConversations] = useState([]);
+  const [arrivalMessage, setArrivalMessage] = useState<any>(null);
   const [messages, setMessages] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const socket: any = useRef();
-
-  /*
-  useEffect(() => {
-    socket.current = io("ws://localhost:8900");
-    socket.current.on("getMessage", (data: any) => {
-      setArrivalMessage({
-        sender: data.senderId,
-        text: data.text,
-      });
-    });
-  }, []);
 
   useEffect(() => {
     arrivalMessage &&
       currentChat?.members.includes(arrivalMessage.sender) &&
       setMessages((prev: any) => [...prev, arrivalMessage]);
   }, [arrivalMessage, currentChat]);
+
+  /*
 
   useEffect(() => {
     socket.current.emit("addUser", user._id);
