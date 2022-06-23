@@ -1,37 +1,32 @@
-import { Box, Grid, Stack } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { io } from "socket.io-client";
 import { Header } from "../../Components/Header";
 import apiNode from "../../Services/apiNode";
-import { RootStore } from "../../Store";
 import ChatConversations from "./components/ChatConversations";
 import Conversation from "./components/Conversation";
-import { ChatMenuFriends, Content } from "./style";
-import logo from "../../Assets/logo-baby-shower.svg";
+import { ChatMenuFriends } from "./style";
+
+const socket = io("http://localhost:8080");
+socket.on("connect", () =>
+  console.log("[IO] Connect => A new connection has been established")
+);
 
 const ChatMessager = () => {
   const [currentChat, _] = useState<any>(null);
   const [conversations, setConversations] = useState([]);
-  const [messages, setMessages] = useState<any[]>([]);
-  const [newMessage, setNewMessage] = useState("");
-  const socket: any = useRef();
-
-  /*
-  useEffect(() => {
-    socket.current = io("ws://localhost:8900");
-    socket.current.on("getMessage", (data: any) => {
-      setArrivalMessage({
-        sender: data.senderId,
-        text: data.text,
-      });
-    });
-  }, []);
+  const [arrivalMessage, setArrivalMessage] = useState<any>(null);
+  const [messages, setMessages] = useState<any>(null);
+  const [loadingMessages, setLoadingMessages] = useState(true);
+  const [loadingChats, setLoadingChats] = useState(true);
 
   useEffect(() => {
     arrivalMessage &&
       currentChat?.members.includes(arrivalMessage.sender) &&
       setMessages((prev: any) => [...prev, arrivalMessage]);
   }, [arrivalMessage, currentChat]);
+
+  /*
 
   useEffect(() => {
     socket.current.emit("addUser", user._id);
@@ -56,7 +51,10 @@ const ChatMessager = () => {
     const getMessages = async () => {
       await apiNode
         .get("/chat/" + "81d56a9f-119a-4877-b98f-d825530ae930")
-        .then((response) => setMessages(response.data))
+        .then((response) => {
+          setMessages(response.data.messages);
+          setLoadingMessages(false);
+        })
         .catch((err) => {});
     };
     getMessages();
@@ -66,16 +64,14 @@ const ChatMessager = () => {
     const getConversations = async () => {
       await apiNode
         .get("/chat")
-        .then((res) => setConversations(res.data))
+        .then((res) => {
+          setConversations(res.data.chats);
+          setLoadingChats(false);
+        })
         .catch((err) => {});
     };
     getConversations();
   }, []);
-
-  useEffect(() => {
-    console.log(conversations);
-    console.log(messages);
-  }, [messages, conversations]);
 
   return (
     <>
@@ -96,19 +92,21 @@ const ChatMessager = () => {
                   backgroundSize: `cover`,
                 }}
               />
-              <ChatConversations conversations={conversations} />
+              {!loadingChats && (
+                <ChatConversations conversations={conversations} />
+              )}
             </Grid>
           </ChatMenuFriends>
         </Grid>
         <Grid item flex={1}>
-          <Conversation
-            currentChat={currentChat}
-            messages={messages}
-            newMessage={newMessage}
-            setMessages={setMessages}
-            setNewMessage={setNewMessage}
-            socket={socket}
-          />
+          {!loadingMessages && (
+            <Conversation
+              messages={messages}
+              currentChat={currentChat}
+              setMessages={setMessages}
+              socket={socket}
+            />
+          )}
         </Grid>
       </Grid>
     </>

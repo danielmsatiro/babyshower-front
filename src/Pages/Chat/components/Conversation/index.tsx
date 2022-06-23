@@ -1,112 +1,97 @@
-import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import api from "../../../../Services/api";
+import { memo, useEffect, useRef, useState } from "react";
 import Message from "../Message";
 import { Container } from "./style";
-
-interface IMessage {
-  text: string;
-  createdAt: string;
-}
+import { Button, TextField } from "@mui/material";
+import { image } from "../../constants";
+import apiNode from "../../../../Services/apiNode";
 
 interface IConversationProps {
-  newMessage: any;
-  socket: any;
   currentChat: any;
   setMessages: any;
-  setNewMessage: any;
   messages: any;
+  socket: any;
 }
 
 const Conversation = ({
-  newMessage,
-  socket,
-  currentChat,
-  setMessages,
-  setNewMessage,
   messages,
+  setMessages,
+  socket
 }: IConversationProps) => {
-  const [chatCurrent, setchatCurrent] = useState<any>(null);
-  const currentUser = 1;
-  const user: any = 1;
+  const [newMessage, setNewMessage] = useState<string>("");
+  const [refresh, setRefresh] = useState(false)
 
-  //entendo que currentUser mudará a cada menssagem então:
-  //e que user é quem está logado
-  //Então definimos se o dono da mensagem é quem está logado:
-  const logged = currentUser === user;
-
-  //coloquei essa variável, Hirton. Verificar onde você quer incluir
-  const image =
-    "https://babyshower-upload.s3.sa-east-1.amazonaws.com/image-profile%40%242b%2410%24qKGIigvivA1HZhaHgPsZpuKpaskSnc87aRBoZjpjh4URb0kvJHF0W";
-  const MockedMessage: IMessage = {
-    text: "Olá tudo bem?",
-    createdAt: "Fri, 06 May 2022 11:14:11 GMT",
-  };
-
-  useEffect(() => {
-    const chatId: string = "";
-
-    const getUserChatCurrent = async () => {
-      try {
-        const res = await api.get(`/chat/${chatId}`);
-        setchatCurrent(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getUserChatCurrent();
-  }, [currentUser]);
-
-  const handleSubmit = async (e: Event) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     const message = {
       message: newMessage,
     };
 
-    const receiverId = currentChat.members.find(
-      (member: any) => member !== user._id
-    );
+    const receiverId = 2;
 
-    socket.current.emit("sendMessage", {
-      senderId: user._id,
+    socket.emit("chat.message", {
+      senderId: 1,
       receiverId,
       text: newMessage,
     });
 
     try {
-      const res = await api.post("/chat", message);
+      const res = await apiNode.post(`chat/${receiverId}`, message);
+      console.log("messagem enviada com sucesso");
       setMessages([...messages, res.data]);
       setNewMessage("");
+      setRefresh(true)
     } catch (err) {
       console.log(err);
     }
   };
 
-  const bottomRef = useRef(null);
+  const bottomRef: any = useRef(null);
 
-  /* useEffect(() => {
-    // 👇️ scroll to bottom every time messages change
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]); */
+  }, [messages]);
+
+  useEffect(() => {
+    const msgs = messages
+    msgs.push(newMessage)
+    socket.on('chat.message', msgs)
+    return () => socket.off('chat.message', msgs)
+}, [refresh])
 
   return (
     <Container>
-      {/* Inclusão mockada pra ver o resultado */}
-
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={false} />
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={false} />
-      <Message message={MockedMessage} image={image} logged={false} />
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={false} />
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={true} />
-      <Message message={MockedMessage} image={image} logged={false} />
+      {messages.map((message: any) => {
+        const owner = message.parent_id === 1 ? true : false;
+        return (
+          <Message
+            image={image}
+            message={message.message}
+            logged={owner}
+            key={message.id}
+          />
+        );
+      })}
+      <TextField
+        id="outlined-basic"
+        label="Outlined"
+        variant="outlined"
+        onChange={(e) => setNewMessage(e.target.value)}
+        style={{ width: "80%" }}
+      />
+      <Button
+        color="primary"
+        style={{
+          background: "green",
+          color: "white",
+          width: "20%",
+          height: "60px",
+        }}
+        onClick={() => handleSubmit()}
+      >
+        Sent
+      </Button>
       <div ref={bottomRef}></div>
     </Container>
   );
 };
 
-export default Conversation;
+export default memo(Conversation);
