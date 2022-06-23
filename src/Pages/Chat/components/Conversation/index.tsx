@@ -4,6 +4,8 @@ import api from "../../../../Services/api";
 import Message from "../Message";
 import { Container } from "./style";
 import ScrollToBottom from "react-scroll-to-bottom";
+import { Input } from "@material-ui/core";
+import { TextField } from "@mui/material";
 
 interface IMessage {
   text: string;
@@ -61,6 +63,7 @@ const Conversation = ({messages, currentChat, setMessages, socket}: IConversatio
           return (<Message image={image} message={message.message} logged={owner} key={message.id} />)
         })
       }
+      <TextField id="outlined-basic" label="Outlined" variant="outlined" fullWidth/>
     </Container>
   );
 };

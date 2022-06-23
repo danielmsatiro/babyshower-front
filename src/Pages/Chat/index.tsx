@@ -1,20 +1,16 @@
-import { Box, Grid, Stack } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import { Header } from "../../Components/Header";
 import apiNode from "../../Services/apiNode";
-import { RootStore } from "../../Store";
 import ChatConversations from "./components/ChatConversations";
 import Conversation from "./components/Conversation";
-import { ChatMenuFriends, Content } from "./style";
-import logo from "../../Assets/logo-baby-shower.svg";
+import { ChatMenuFriends } from "./style";
 
 const ChatMessager = () => {
   const [currentChat, _] = useState<any>(null);
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState<any>(null);
-  const [loading, setLoading] = useState(true)
-  const [newMessage, setNewMessage] = useState("");
+  const [loading, setLoading] = useState(true);
   const socket: any = useRef();
 
   /*
@@ -55,12 +51,13 @@ const ChatMessager = () => {
 
   useEffect(() => {
     const getMessages = async () => {
-        await apiNode.get("/chat/" + "81d56a9f-119a-4877-b98f-d825530ae930")
+      await apiNode
+        .get("/chat/" + "81d56a9f-119a-4877-b98f-d825530ae930")
         .then((response) => {
-          setMessages(response.data.messages)
-          setLoading(false)
+          setMessages(response.data.messages);
+          setLoading(false);
         })
-        .catch((err) => {})
+        .catch((err) => {});
     };
     getMessages();
   }, []);
@@ -99,13 +96,14 @@ const ChatMessager = () => {
           </ChatMenuFriends>
         </Grid>
         <Grid item flex={1}>
-        {!loading && 
-      <Conversation
-      messages={messages}
-      currentChat={currentChat}
-      setMessages={setMessages}
-      socket={socket}
-      />}
+          {!loading && (
+            <Conversation
+              messages={messages}
+              currentChat={currentChat}
+              setMessages={setMessages}
+              socket={socket}
+            />
+          )}
         </Grid>
       </Grid>
     </>
