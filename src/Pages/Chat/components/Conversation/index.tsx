@@ -15,10 +15,10 @@ interface IConversationProps {
 const Conversation = ({
   messages,
   setMessages,
-  socket
+  socket,
 }: IConversationProps) => {
   const [newMessage, setNewMessage] = useState<string>("");
-  const [refresh, setRefresh] = useState(false)
+  const [refresh, setRefresh] = useState(false);
 
   const handleSubmit = async () => {
     const message = {
@@ -38,7 +38,7 @@ const Conversation = ({
       console.log("messagem enviada com sucesso");
       setMessages([...messages, res.data]);
       setNewMessage("");
-      setRefresh(true)
+      setRefresh(true);
     } catch (err) {
       console.log(err);
     }
@@ -51,11 +51,11 @@ const Conversation = ({
   }, [messages]);
 
   useEffect(() => {
-    const msgs = messages
-    msgs.push(newMessage)
-    socket.on('chat.message', msgs)
-    return () => socket.off('chat.message', msgs)
-}, [refresh])
+    const msgs = messages;
+    msgs.push(newMessage);
+    socket.on("chat.message", msgs);
+    return () => socket.off("chat.message", msgs);
+  }, [refresh]);
 
   return (
     <Container>

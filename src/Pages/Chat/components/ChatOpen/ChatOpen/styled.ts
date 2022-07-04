@@ -11,6 +11,7 @@ export const Container = styled.div<ContainerProps>`
   justify-content: start;
   min-height: 102px;
   margin: 20px 10px;
+  background: red;
 `;
 
 export const Content = styled.div`

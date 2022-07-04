@@ -9,8 +9,8 @@ function Routes() {
   return (
     <div>
       <Switch>
-        <Route path="/" component={Messenger} />
         <Route exact path="/" component={Home} />
+        <Route path="/chat" component={Messenger} />
         <Route path="/login" component={Login} />
         <Route path="/profile" component={Profile} />
       </Switch>

@@ -1,21 +1,36 @@
 import { Box, Stack } from "@mui/material";
+import { useEffect, useState } from "react";
+import { IUser } from "../../../../../interfaces/user";
+import api from "../../../../../Services/api";
 import { Container, Content, Preview } from "./styled";
 
 interface IChatOpenProps {
-  username: string;
+  userId: number;
   lastMessage: string;
-  image: string;
   noRead: number; //quantas mensagens não lidas
 }
 
-const ChatOpen = ({ username, lastMessage, image, noRead }: IChatOpenProps) => {
+const ChatOpen = ({ userId, lastMessage, noRead }: IChatOpenProps) => {
+  const [user, setUser] = useState<Partial<IUser>>({} as Partial<IUser>);
+
+  const getUser = async () => {
+    await api
+      .get(`/parents?parent_id=${userId}`)
+      .then((res) => setUser(res.data.user))
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   return (
     <Container>
       <Content>
-        <Preview src={image} />
+        <Preview src={user?.image as string} />
         <Stack justifyContent={"center"} flex={1}>
           <Stack sx={{ fontSize: "22px", fontWeight: "bold" }}>
-            {username}
+            {user?.name as string}
           </Stack>
           <Stack>{lastMessage}</Stack>
         </Stack>

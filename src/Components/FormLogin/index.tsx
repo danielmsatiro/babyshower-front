@@ -39,11 +39,15 @@ export const FormLogin = () => {
 
   const dispatch = useDispatch();
   const handleLogin = ({ usernameCpfEmail, password }: Partial<ILogin>) => {
-    const reCpf = /\d+/g;
+    const reCpf =
+      /^([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})$/;
     const reEmail = /^[a-z0-9._%$#*&!"'-+?,]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
     if (reCpf.test(usernameCpfEmail as string)) {
       dispatch(
-        getTokenThunk({ cpf: usernameCpfEmail, password: password as string })
+        getTokenThunk({
+          cpf: usernameCpfEmail?.replace(/[^0-9]/g, ""),
+          password: password as string,
+        })
       );
     } else if (reEmail.test(usernameCpfEmail as string)) {
       dispatch(

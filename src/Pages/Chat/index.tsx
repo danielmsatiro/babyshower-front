@@ -1,53 +1,58 @@
 import { Box, Grid } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
 import { Header } from "../../Components/Header";
+import { IUser } from "../../interfaces/user";
+import api from "../../Services/api";
 import apiNode from "../../Services/apiNode";
-import ChatConversations from "./components/ChatConversations";
+import { RootStore } from "../../Store";
+import ChatOpen from "./components/ChatOpen/ChatOpen";
 import Conversation from "./components/Conversation";
 import { ChatMenuFriends } from "./style";
+import { IChat, IMessage } from "../../interfaces/chat";
 
-const socket = io("http://localhost:8080");
+const socket = io("http://localhost:4000");
 socket.on("connect", () =>
   console.log("[IO] Connect => A new connection has been established")
 );
 
 const ChatMessager = () => {
-  const [currentChat, _] = useState<any>(null);
-  const [conversations, setConversations] = useState([]);
-  const [arrivalMessage, setArrivalMessage] = useState<any>(null);
-  const [messages, setMessages] = useState<any>(null);
-  const [loadingMessages, setLoadingMessages] = useState(true);
-  const [loadingChats, setLoadingChats] = useState(true);
+  const token = useSelector((state: RootStore): any => state.token);
+  //const [currentChat, _] = useState<any>(null);
+  const [conversations, setConversations] = useState<IChat[]>([] as IChat[]);
+  //const [arrivalMessage, setArrivalMessage] = useState<any>(null);
+  //const [messages, setMessages] = useState<any>(null);
+  //const [loadingMessages, setLoadingMessages] = useState(true);
+  const [loadingChats, setLoadingChats] = useState(false);
 
-  useEffect(() => {
+  /* useEffect(() => {
     arrivalMessage &&
       currentChat?.members.includes(arrivalMessage.sender) &&
       setMessages((prev: any) => [...prev, arrivalMessage]);
   }, [arrivalMessage, currentChat]);
-
-  /*
-
-  useEffect(() => {
+ */
+  /* useEffect(() => {
     socket.current.emit("addUser", user._id);
-  }, [user]); 
+  }, [user]); */
 
+  const getConversations = async (): Promise<any> => {
+    setLoadingChats(true);
+    await apiNode
+      .get("/chat", {
+        headers: {
+          Authorization: `Bearer ${token.tokenNode}`,
+        },
+      })
+      .then((res) => setConversations(res.data.chats));
+    setLoadingChats(false);
+  };
 
   useEffect(() => {
-    const getConversations = async () => {
-        await apiNode.get("/chat", {
-          headers: {
-            Authorization: `Bearer ${token.tokenNode}`,
-          },
-        })
-        .then((res) => setConversations(res.data))
-        .catch((err) => console.log(err))
-    };
     getConversations();
-  }, [user._id]);
-*/
+  }, []);
 
-  useEffect(() => {
+  /* useEffect(() => {
     const getMessages = async () => {
       await apiNode
         .get("/chat/" + "81d56a9f-119a-4877-b98f-d825530ae930")
@@ -58,9 +63,9 @@ const ChatMessager = () => {
         .catch((err) => {});
     };
     getMessages();
-  }, []);
+  }, []); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     const getConversations = async () => {
       await apiNode
         .get("/chat")
@@ -71,7 +76,13 @@ const ChatMessager = () => {
         .catch((err) => {});
     };
     getConversations();
-  }, []);
+  }, []); */
+
+  const getOtherUserId = (chat: any, loggedId: number) => {
+    return chat.parent_user !== loggedId
+      ? chat.parent_user
+      : chat.other_parent_user;
+  };
 
   return (
     <>
@@ -92,13 +103,27 @@ const ChatMessager = () => {
                   backgroundSize: `cover`,
                 }}
               />
-              {!loadingChats && (
-                <ChatConversations conversations={conversations} />
-              )}
+              {conversations.map((chat) => {
+                return (
+                  <ChatOpen
+                    userId={getOtherUserId(chat as IChat, token.id as number)}
+                    lastMessage={
+                      chat.messages[chat.messages.length - 1].message
+                    }
+                    noRead={chat.messages.reduce((acc, msg) => {
+                      if (!msg.read_message && msg.parent_id !== token.id) {
+                        acc++;
+                      }
+                      return acc;
+                    }, 0)}
+                    key={chat.id}
+                  />
+                );
+              })}
             </Grid>
           </ChatMenuFriends>
         </Grid>
-        <Grid item flex={1}>
+        {/* <Grid item flex={1}>
           {!loadingMessages && (
             <Conversation
               messages={messages}
@@ -107,7 +132,7 @@ const ChatMessager = () => {
               socket={socket}
             />
           )}
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   );
