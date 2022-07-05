@@ -2,47 +2,78 @@ import { memo, useEffect, useRef, useState } from "react";
 import Message from "../Message";
 import { Container } from "./style";
 import { Button, TextField } from "@mui/material";
-import { image } from "../../constants";
 import apiNode from "../../../../Services/apiNode";
+import { useSelector } from "react-redux";
+import { RootStore } from "../../../../Store";
+import { IMessage } from "../../../../interfaces/chat";
 
 interface IConversationProps {
-  currentChat: any;
-  setMessages: any;
-  messages: any;
+  chatWith: number;
   socket: any;
+  currentChat?: string | null;
 }
 
 const Conversation = ({
-  messages,
-  setMessages,
+  chatWith,
   socket,
+  currentChat = null,
 }: IConversationProps) => {
+  const token = useSelector((state: RootStore): any => state.token);
   const [newMessage, setNewMessage] = useState<string>("");
-  const [refresh, setRefresh] = useState(false);
+  const [messages, setMessages] = useState<IMessage[]>([] as IMessage[]);
+
+  const getMessages = async (currentChat: string) => {
+    await apiNode
+      .get(`chat/${currentChat}`, {
+        headers: {
+          Authorization: `Bearer ${token.tokenNode}`,
+        },
+      })
+      .then((res) => {
+        setMessages(res.data.messages);
+      })
+      .catch((err) => console.log("erro na busca de messages", err));
+  };
 
   const handleSubmit = async () => {
     const message = {
       message: newMessage,
     };
 
-    const receiverId = 2;
-
-    socket.emit("chat.message", {
-      senderId: 1,
-      receiverId,
-      text: newMessage,
-    });
-
     try {
-      const res = await apiNode.post(`chat/${receiverId}`, message);
-      console.log("messagem enviada com sucesso");
-      setMessages([...messages, res.data]);
-      setNewMessage("");
-      setRefresh(true);
+      const res = await apiNode.post(`chat/${chatWith}`, message, {
+        headers: {
+          Authorization: `Bearer ${token.tokenNode}`,
+        },
+      });
+
+      const chatId = (res.data.chat as string).replace("/chat/", "");
+
+      await getMessages(chatId);
+
+      socket.emit("sendMessage", chatId);
     } catch (err) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    if (currentChat) {
+      getMessages(currentChat).then((_) => {
+        socket.emit("sendMessage", currentChat);
+      });
+    }
+  }, [chatWith]);
+
+  useEffect(() => {
+    socket.on("receiveMessage", (data: string) => {
+      if (currentChat === data) {
+        getMessages(currentChat as string).then((_) => {
+          socket.emit("sendMessage", currentChat);
+        });
+      }
+    });
+  }, [socket]);
 
   const bottomRef: any = useRef(null);
 
@@ -50,21 +81,15 @@ const Conversation = ({
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  useEffect(() => {
-    const msgs = messages;
-    msgs.push(newMessage);
-    socket.on("chat.message", msgs);
-    return () => socket.off("chat.message", msgs);
-  }, [refresh]);
-
   return (
     <Container>
-      {messages.map((message: any) => {
-        const owner = message.parent_id === 1 ? true : false;
+      {messages.map((message: IMessage) => {
+        const owner = message.parent_id === token.id ? true : false;
         return (
           <Message
-            image={image}
+            userId={message.parent_id}
             message={message.message}
+            createdAt={message.createdAt}
             logged={owner}
             key={message.id}
           />
@@ -75,6 +100,9 @@ const Conversation = ({
         label="Outlined"
         variant="outlined"
         onChange={(e) => setNewMessage(e.target.value)}
+        onKeyPress={(event) => {
+          event.key === "Enter" && handleSubmit();
+        }}
         style={{ width: "80%" }}
       />
       <Button

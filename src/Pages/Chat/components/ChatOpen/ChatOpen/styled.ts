@@ -9,7 +9,8 @@ interface ContainerProps {
 export const Container = styled.div<ContainerProps>`
   display: flex;
   justify-content: start;
-  min-height: 102px; ;
+  min-height: 102px;
+  cursor: pointer;
 `;
 
 export const Content = styled.div`

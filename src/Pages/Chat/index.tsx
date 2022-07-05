@@ -10,25 +10,21 @@ import ChatOpen from "./components/ChatOpen/ChatOpen";
 import Conversation from "./components/Conversation";
 import { ChatMenuFriends } from "./style";
 import { IChat, IMessage } from "../../interfaces/chat";
+import { AccountCircle } from "@mui/icons-material";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:4000");
+socket.on("connect", () =>
+  console.log("[IO] Connect => A new connection has been established")
+);
 
 const ChatMessager = () => {
   const token = useSelector((state: RootStore): any => state.token);
-  //const [currentChat, _] = useState<any>(null);
   const [conversations, setConversations] = useState<IChat[]>([] as IChat[]);
-  //const [arrivalMessage, setArrivalMessage] = useState<any>(null);
-  //const [messages, setMessages] = useState<any>(null);
-  //const [loadingMessages, setLoadingMessages] = useState(true);
   const [loadingChats, setLoadingChats] = useState(false);
-
-  /* useEffect(() => {
-    arrivalMessage &&
-      currentChat?.members.includes(arrivalMessage.sender) &&
-      setMessages((prev: any) => [...prev, arrivalMessage]);
-  }, [arrivalMessage, currentChat]);
- */
-  /* useEffect(() => {
-    socket.current.emit("addUser", user._id);
-  }, [user]); */
+  const [user, setUser] = useState<Partial<IUser>>({} as Partial<IUser>);
+  const [chatWith, setChatWith] = useState<number>(); //aqui eu registro com quem quero falar
+  const [currentChat, setCurrentChat] = useState<string>();
 
   const getConversations = async () => {
     setLoadingChats(true);
@@ -42,64 +38,58 @@ const ChatMessager = () => {
     setLoadingChats(false);
   };
 
-  useEffect(() => {
-    getConversations();
-  }, []);
-
-  /* useEffect(() => {
-    const getMessages = async () => {
-      await apiNode
-        .get("/chat/" + "81d56a9f-119a-4877-b98f-d825530ae930")
-        .then((response) => {
-          setMessages(response.data.messages);
-          setLoadingMessages(false);
-        })
-        .catch((err) => {});
-    };
-    getMessages();
-  }, []); */
-
-  /* useEffect(() => {
-    const getConversations = async () => {
-      await apiNode
-        .get("/chat")
-        .then((res) => {
-          setConversations(res.data.chats);
-          setLoadingChats(false);
-        })
-        .catch((err) => {});
-    };
-    getConversations();
-  }, []); */
-
   const getOtherUserId = (chat: any, loggedId: number) => {
     return chat.parent_user !== loggedId
       ? chat.parent_user
       : chat.other_parent_user;
   };
 
+  const getUserLogged = async () => {
+    await api
+      .get(`/parents?parent_id=${token.id}`)
+      .then((res) => setUser(res.data.user))
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    getConversations();
+    getUserLogged();
+  }, []);
+
+  useEffect(() => {
+    socket.on("receiveMessage", (data) => {
+      console.log(`Room ${data} updated now`);
+      getConversations();
+    });
+  }, [socket]);
+
   return (
     <>
       <Header />
 
-      <Grid container p={4} sx={{ background: "#F3F3F3" }}>
+      <Grid container p={0} sx={{ background: "#F3F3F3" }}>
         <Grid item width={"400px"}>
           <ChatMenuFriends>
             <Stack alignItems={"center"} justifyContent={"center"}>
-              <Box
-                mt={4}
-                borderRadius={100}
-                sx={{
-                  overflow: "hidden",
-                  height: "200px",
-                  width: "200px",
-                  backgroundImage: `url(${"https://babyshower-upload.s3.sa-east-1.amazonaws.com/image-profile%40%242b%2410%24qKGIigvivA1HZhaHgPsZpuKpaskSnc87aRBoZjpjh4URb0kvJHF0W"})`,
-                  backgroundSize: `cover`,
-                }}
-              />
+              {user?.image ? (
+                <Box
+                  mt={4}
+                  borderRadius={100}
+                  sx={{
+                    overflow: "hidden",
+                    height: "200px",
+                    width: "200px",
+                    backgroundImage: `url(${user?.image})`,
+                    backgroundSize: `cover`,
+                  }}
+                />
+              ) : (
+                <AccountCircle sx={{ fontSize: "60px", margin: "12px" }} />
+              )}
 
               <Stack divider={<Divider sx={{ border: "1px solid white" }} />}>
                 {conversations.map((chat) => {
+                  socket.emit("joinRoom", chat.id);
                   return (
                     <ChatOpen
                       userId={getOtherUserId(chat as IChat, token.id as number)}
@@ -112,8 +102,9 @@ const ChatMessager = () => {
                         }
                         return acc;
                       }, 0)}
-                      room={chat.id}
-                      getConversations={getConversations}
+                      chatId={chat.id}
+                      setCurrentChat={setCurrentChat}
+                      setChatWith={setChatWith}
                       key={chat.id}
                     />
                   );
@@ -122,16 +113,15 @@ const ChatMessager = () => {
             </Stack>
           </ChatMenuFriends>
         </Grid>
-        {/* <Grid item flex={1}>
-          {!loadingMessages && (
+        <Grid item flex={1}>
+          {!!chatWith && (
             <Conversation
-              messages={messages}
-              currentChat={currentChat}
-              setMessages={setMessages}
-              socket={socket}
+              chatWith={chatWith} //obrigatório informar com quem vai falar
+              currentChat={currentChat} //pode não ter chat aberto ainda
+              socket={socket} // precisa levar o socket
             />
           )}
-        </Grid> */}
+        </Grid>
       </Grid>
     </>
   );

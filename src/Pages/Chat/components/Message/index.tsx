@@ -1,27 +1,51 @@
+import { AccountCircle } from "@mui/icons-material";
+import { memo, useEffect, useState } from "react";
 import { format } from "timeago.js";
+import { IUser } from "../../../../interfaces/user";
+import api from "../../../../Services/api";
 import { Container, Content, Preview, Sentence } from "./styled";
 
 interface IMessageProps {
+  userId: number;
   message: any;
-  image: string;
+  createdAt: string;
   logged: boolean;
 }
 
-const Message = ({ message, image, logged }: IMessageProps) => {
+const Message = ({ userId, message, createdAt, logged }: IMessageProps) => {
+  const [user, setUser] = useState<Partial<IUser>>({} as Partial<IUser>);
+
+  const getUser = async () => {
+    await api
+      .get(`/parents?parent_id=${userId}`)
+      .then((res) => setUser(res.data.user))
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const image = user?.image ? (
+    <Preview src={user?.image as string} />
+  ) : (
+    <AccountCircle sx={{ fontSize: "60px", margin: "12px" }} />
+  );
+
   return (
     <Container logged={logged}>
       <Content>
-        {!logged && <Preview src={image} />}
+        {!logged && image}
         <Sentence logged={logged}>
           <div>
             {message}
-            <span>{format(message.createdAt)}</span>
+            <span>{format(createdAt)}</span>
           </div>
         </Sentence>
-        {logged && <Preview src={image} />}
+        {logged && image}
       </Content>
     </Container>
   );
 };
 
-export default Message;
+export default memo(Message);

@@ -1,34 +1,28 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
 import { IUser } from "../../../../../interfaces/user";
 import api from "../../../../../Services/api";
 import { Container, Content, Preview } from "./styled";
 import { AccountCircle } from "@mui/icons-material";
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:4000");
-socket.on("connect", () =>
-  console.log("[IO] Connect => A new connection has been established")
-);
 
 interface IChatOpenProps {
   userId: number;
   lastMessage: string;
   noRead: number;
-  room: string;
-  getConversations: () => void;
+  chatId: string;
+  setCurrentChat: Dispatch<SetStateAction<string | undefined>>;
+  setChatWith: Dispatch<SetStateAction<number | undefined>>;
 }
 
 const ChatOpen = ({
   userId,
   lastMessage,
   noRead,
-  room,
-  getConversations,
+  chatId,
+  setCurrentChat,
+  setChatWith,
 }: IChatOpenProps) => {
   const [user, setUser] = useState<Partial<IUser>>({} as Partial<IUser>);
-
-  socket.emit("joinRoom", room);
 
   const getUser = async () => {
     await api
@@ -41,14 +35,13 @@ const ChatOpen = ({
     getUser();
   }, []);
 
-  useEffect(() => {
-    socket.on("receiveMessage", (_) => {
-      console.log(`${user?.name} chamando...`);
-      getConversations();
-    });
-  }, [socket]);
   return (
-    <Container>
+    <Container
+      onClick={() => {
+        setCurrentChat(chatId);
+        setChatWith(userId);
+      }}
+    >
       <Content>
         {user?.image ? (
           <Preview src={user?.image as string} />
@@ -84,4 +77,4 @@ const ChatOpen = ({
   );
 };
 
-export default ChatOpen;
+export default memo(ChatOpen);
