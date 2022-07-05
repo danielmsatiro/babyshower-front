@@ -10,9 +10,9 @@ function Routes() {
     <div>
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route path="/chat" component={Messenger} />
+        <Route path="/chat" component={Messenger} isPrivate />
         <Route path="/login" component={Login} />
-        <Route path="/profile" component={Profile} />
+        <Route path="/profile" component={Profile} isPrivate />
       </Switch>
     </div>
   );

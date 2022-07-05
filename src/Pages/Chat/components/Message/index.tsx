@@ -1,6 +1,5 @@
 import { AccountCircle } from "@mui/icons-material";
 import { memo, useEffect, useState } from "react";
-import { format } from "timeago.js";
 import { IUser } from "../../../../interfaces/user";
 import api from "../../../../Services/api";
 import { Container, Content, Preview, Sentence } from "./styled";
@@ -14,6 +13,7 @@ interface IMessageProps {
 
 const Message = ({ userId, message, createdAt, logged }: IMessageProps) => {
   const [user, setUser] = useState<Partial<IUser>>({} as Partial<IUser>);
+  const date = new Date(createdAt);
 
   const getUser = async () => {
     await api
@@ -39,7 +39,7 @@ const Message = ({ userId, message, createdAt, logged }: IMessageProps) => {
         <Sentence logged={logged}>
           <div>
             {message}
-            <span>{format(createdAt)}</span>
+            <span>{`${date.getHours()}:${date.getMinutes()}`}</span>
           </div>
         </Sentence>
         {logged && image}

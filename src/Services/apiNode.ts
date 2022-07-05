@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiNode = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: "https://share-babyshower-node.herokuapp.com",
 });
 
 export default apiNode;

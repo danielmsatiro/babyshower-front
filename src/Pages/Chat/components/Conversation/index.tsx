@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from "react";
 import Message from "../Message";
-import { Container } from "./style";
+import { Container, Content } from "./style";
 import { Button, TextField } from "@mui/material";
 import apiNode from "../../../../Services/apiNode";
 import { useSelector } from "react-redux";
@@ -83,25 +83,30 @@ const Conversation = ({
 
   return (
     <Container>
-      {messages.map((message: IMessage) => {
-        const owner = message.parent_id === token.id ? true : false;
-        return (
-          <Message
-            userId={message.parent_id}
-            message={message.message}
-            createdAt={message.createdAt}
-            logged={owner}
-            key={message.id}
-          />
-        );
-      })}
+      <Content>
+        {messages.map((message: IMessage) => {
+          const owner = message.parent_id === token.id ? true : false;
+          return (
+            <Message
+              userId={message.parent_id}
+              message={message.message}
+              createdAt={message.createdAt}
+              logged={owner}
+              key={message.id}
+            />
+          );
+        })}
+        <div ref={bottomRef}></div>
+      </Content>
+
       <TextField
         id="outlined-basic"
         label="Outlined"
         variant="outlined"
+        value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
         onKeyPress={(event) => {
-          event.key === "Enter" && handleSubmit();
+          event.key === "Enter" && handleSubmit() && setNewMessage("");
         }}
         style={{ width: "80%" }}
       />
@@ -113,11 +118,13 @@ const Conversation = ({
           width: "20%",
           height: "60px",
         }}
-        onClick={() => handleSubmit()}
+        onClick={() => {
+          handleSubmit();
+          setNewMessage("");
+        }}
       >
         Sent
       </Button>
-      <div ref={bottomRef}></div>
     </Container>
   );
 };
