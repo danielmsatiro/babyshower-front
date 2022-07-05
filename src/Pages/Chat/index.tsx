@@ -1,7 +1,6 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Divider, Grid, Stack } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { io } from "socket.io-client";
 import { Header } from "../../Components/Header";
 import { IUser } from "../../interfaces/user";
 import api from "../../Services/api";
@@ -11,11 +10,6 @@ import ChatOpen from "./components/ChatOpen/ChatOpen";
 import Conversation from "./components/Conversation";
 import { ChatMenuFriends } from "./style";
 import { IChat, IMessage } from "../../interfaces/chat";
-
-const socket = io("http://localhost:4000");
-socket.on("connect", () =>
-  console.log("[IO] Connect => A new connection has been established")
-);
 
 const ChatMessager = () => {
   const token = useSelector((state: RootStore): any => state.token);
@@ -36,7 +30,7 @@ const ChatMessager = () => {
     socket.current.emit("addUser", user._id);
   }, [user]); */
 
-  const getConversations = async (): Promise<any> => {
+  const getConversations = async () => {
     setLoadingChats(true);
     await apiNode
       .get("/chat", {
@@ -91,7 +85,7 @@ const ChatMessager = () => {
       <Grid container p={4} sx={{ background: "#F3F3F3" }}>
         <Grid item width={"400px"}>
           <ChatMenuFriends>
-            <Grid container justifyContent={"center"}>
+            <Stack alignItems={"center"} justifyContent={"center"}>
               <Box
                 mt={4}
                 borderRadius={100}
@@ -103,24 +97,29 @@ const ChatMessager = () => {
                   backgroundSize: `cover`,
                 }}
               />
-              {conversations.map((chat) => {
-                return (
-                  <ChatOpen
-                    userId={getOtherUserId(chat as IChat, token.id as number)}
-                    lastMessage={
-                      chat.messages[chat.messages.length - 1].message
-                    }
-                    noRead={chat.messages.reduce((acc, msg) => {
-                      if (!msg.read_message && msg.parent_id !== token.id) {
-                        acc++;
+
+              <Stack divider={<Divider sx={{ border: "1px solid white" }} />}>
+                {conversations.map((chat) => {
+                  return (
+                    <ChatOpen
+                      userId={getOtherUserId(chat as IChat, token.id as number)}
+                      lastMessage={
+                        chat.messages[chat.messages.length - 1].message
                       }
-                      return acc;
-                    }, 0)}
-                    key={chat.id}
-                  />
-                );
-              })}
-            </Grid>
+                      noRead={chat.messages.reduce((acc, msg) => {
+                        if (!msg.read_message && msg.parent_id !== token.id) {
+                          acc++;
+                        }
+                        return acc;
+                      }, 0)}
+                      room={chat.id}
+                      getConversations={getConversations}
+                      key={chat.id}
+                    />
+                  );
+                })}
+              </Stack>
+            </Stack>
           </ChatMenuFriends>
         </Grid>
         {/* <Grid item flex={1}>
