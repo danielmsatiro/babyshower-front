@@ -8,21 +8,34 @@ import { RootStore } from "../../../../Store";
 import { IMessage } from "../../../../interfaces/chat";
 import { IUser } from "../../../../interfaces/user";
 import api from "../../../../Services/api";
+import { v4 as uuid } from "uuid";
 
 interface IConversationProps {
   chatWith: number;
   socket: any;
   currentChat?: string | null;
+  getConversations: () => void;
+}
+
+interface IData {
+  room: string;
+  message: string;
+  createdAt: string;
+  id: string;
+  parent_id: number;
 }
 
 const Conversation = ({
   chatWith,
   socket,
   currentChat = null,
+  getConversations,
 }: IConversationProps) => {
   const token = useSelector((state: RootStore): any => state.token);
   const [newMessage, setNewMessage] = useState<string>("");
-  const [messages, setMessages] = useState<IMessage[]>([] as IMessage[]);
+  const [messages, setMessages] = useState<Partial<IMessage>[]>(
+    [] as Partial<IMessage>[]
+  );
   const [otherUser, setOtherUser] = useState<Partial<IUser>>(
     {} as Partial<IUser>
   );
@@ -42,16 +55,11 @@ const Conversation = ({
   }, []);
 
   const getMessages = async (currentChat: string) => {
-    await apiNode
-      .get(`chat/${currentChat}`, {
-        headers: {
-          Authorization: `Bearer ${token.tokenNode}`,
-        },
-      })
-      .then((res) => {
-        setMessages(res.data.messages);
-      })
-      .catch((err) => console.log("erro na busca de messages", err));
+    return await apiNode.get(`chat/${currentChat}`, {
+      headers: {
+        Authorization: `Bearer ${token.tokenNode}`,
+      },
+    });
   };
 
   const handleSubmit = async () => {
@@ -68,9 +76,22 @@ const Conversation = ({
 
       const chatId = (res.data.chat as string).replace("/chat/", "");
 
-      await getMessages(chatId);
+      getMessages(chatId).then((_) => getConversations());
 
-      socket.emit("sendMessage", chatId);
+      const date = new Date();
+
+      const data = {
+        room: chatId,
+        message: newMessage,
+        createdAt: date.toString(),
+        parent_id: user.id,
+        uuid: uuid(),
+      };
+      socket.emit("sendMessage", data);
+
+      const { room, ...newData } = data;
+
+      setMessages([...messages, newData]);
     } catch (err) {
       console.log(err);
     }
@@ -78,18 +99,22 @@ const Conversation = ({
 
   useEffect(() => {
     if (currentChat) {
-      getMessages(currentChat).then((_) => {
-        socket.emit("sendMessage", currentChat);
-      });
+      getMessages(currentChat)
+        .then((res) => {
+          setMessages(res.data.messages);
+          getConversations();
+        })
+        .catch((err) => console.log("erro na busca de messages", err));
     }
   }, [chatWith]);
 
   useEffect(() => {
-    socket.on("receiveMessage", (data: string) => {
-      if (currentChat === data) {
-        getMessages(currentChat as string).then((_) => {
-          socket.emit("sendMessage", currentChat);
-        });
+    socket.on("receiveMessage", (data: IData) => {
+      if (currentChat === data.room) {
+        getMessages(currentChat as string).then((_) => getConversations());
+
+        const { room, ...newData } = data;
+        setMessages([...messages, newData]);
       }
     });
   }, [socket]);
@@ -103,7 +128,7 @@ const Conversation = ({
   return (
     <Container>
       <Content>
-        {messages.map((message: IMessage) => {
+        {messages.map((message: Partial<IMessage>) => {
           const owner = message.parent_id === token.id ? true : false;
           return (
             <Message
@@ -112,8 +137,8 @@ const Conversation = ({
                   ? otherUser?.image
                   : user?.image) as string
               }
-              message={message?.message}
-              createdAt={message?.createdAt}
+              message={message?.message as string}
+              createdAt={message?.createdAt as string}
               logged={owner}
               key={message?.id}
             />

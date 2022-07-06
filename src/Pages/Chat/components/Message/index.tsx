@@ -6,7 +6,7 @@ import { Container, Content, Preview, Sentence } from "./styled";
 
 interface IMessageProps {
   image: string;
-  message: any;
+  message: string;
   createdAt: string;
   logged: boolean;
 }

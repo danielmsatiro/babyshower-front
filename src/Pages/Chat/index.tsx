@@ -56,12 +56,12 @@ const ChatMessager = () => {
     getUserLogged();
   }, []);
 
-  useEffect(() => {
+  /* useEffect(() => {
     socket.on("receiveMessage", (data) => {
       console.log(`Room ${data} updated now`);
       getConversations();
     });
-  }, [socket]);
+  }, [socket]); */
 
   return (
     <>
@@ -119,6 +119,7 @@ const ChatMessager = () => {
               chatWith={chatWith} //obrigatório informar com quem vai falar
               currentChat={currentChat} //pode não ter chat aberto ainda
               socket={socket} // precisa levar o socket
+              getConversations={getConversations}
             />
           )}
         </Grid>
