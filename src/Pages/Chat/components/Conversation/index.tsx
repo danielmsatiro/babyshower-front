@@ -6,6 +6,8 @@ import apiNode from "../../../../Services/apiNode";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../../../Store";
 import { IMessage } from "../../../../interfaces/chat";
+import { IUser } from "../../../../interfaces/user";
+import api from "../../../../Services/api";
 
 interface IConversationProps {
   chatWith: number;
@@ -21,6 +23,23 @@ const Conversation = ({
   const token = useSelector((state: RootStore): any => state.token);
   const [newMessage, setNewMessage] = useState<string>("");
   const [messages, setMessages] = useState<IMessage[]>([] as IMessage[]);
+  const [otherUser, setOtherUser] = useState<Partial<IUser>>(
+    {} as Partial<IUser>
+  );
+  const [user, setUser] = useState<Partial<IUser>>({} as Partial<IUser>);
+
+  const getUser = async (userId: number) => {
+    return await api.get(`/parents?parent_id=${userId}`);
+  };
+
+  useEffect(() => {
+    getUser(chatWith)
+      .then((res) => setOtherUser(res.data.user))
+      .catch((err) => console.log(err));
+    getUser(token.id)
+      .then((res) => setUser(res.data.user))
+      .catch((err) => console.log(err));
+  }, []);
 
   const getMessages = async (currentChat: string) => {
     await apiNode
@@ -88,11 +107,15 @@ const Conversation = ({
           const owner = message.parent_id === token.id ? true : false;
           return (
             <Message
-              userId={message.parent_id}
-              message={message.message}
-              createdAt={message.createdAt}
+              image={
+                (otherUser?.id === message?.parent_id
+                  ? otherUser?.image
+                  : user?.image) as string
+              }
+              message={message?.message}
+              createdAt={message?.createdAt}
               logged={owner}
-              key={message.id}
+              key={message?.id}
             />
           );
         })}

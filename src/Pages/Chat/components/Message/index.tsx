@@ -5,29 +5,17 @@ import api from "../../../../Services/api";
 import { Container, Content, Preview, Sentence } from "./styled";
 
 interface IMessageProps {
-  userId: number;
+  image: string;
   message: any;
   createdAt: string;
   logged: boolean;
 }
 
-const Message = ({ userId, message, createdAt, logged }: IMessageProps) => {
-  const [user, setUser] = useState<Partial<IUser>>({} as Partial<IUser>);
+const Message = ({ image, message, createdAt, logged }: IMessageProps) => {
   const date = new Date(createdAt);
-
-  const getUser = async () => {
-    await api
-      .get(`/parents?parent_id=${userId}`)
-      .then((res) => setUser(res.data.user))
-      .catch((err) => console.log(err));
-  };
-
-  useEffect(() => {
-    getUser();
-  }, []);
-
-  const image = user?.image ? (
-    <Preview src={user?.image as string} />
+  console.log(image);
+  const finalImage = image ? (
+    <Preview src={image as string} />
   ) : (
     <AccountCircle sx={{ fontSize: "60px", margin: "12px" }} />
   );
@@ -35,14 +23,14 @@ const Message = ({ userId, message, createdAt, logged }: IMessageProps) => {
   return (
     <Container logged={logged}>
       <Content>
-        {!logged && image}
+        {!logged && finalImage}
         <Sentence logged={logged}>
           <div>
             {message}
             <span>{`${date.getHours()}:${date.getMinutes()}`}</span>
           </div>
         </Sentence>
-        {logged && image}
+        {logged && finalImage}
       </Content>
     </Container>
   );
